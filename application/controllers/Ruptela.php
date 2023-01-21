@@ -3,8 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 require_once( APPPATH.'/libraries/REST_Controller.php' );
 use Restserver\libraries\REST_Controller;
-
-
 class Ruptela extends REST_Controller {
 
 
@@ -164,6 +162,7 @@ private function SigEstado($edo){
 
 private function addviajeAuto($vehid, $edo) {
 //  $this->id = "No Entro Bien"; 
+date_default_timezone_set('America/Chihuahua'); 
   $numedo = $this->NumEstado($edo);
   $xsql ="Select viajeid, vehid, tipo, estatus, fecha1, numedo, rupid1, rupid2 from gpsviajes where vehid = $vehid and estatus='Actual' and tipo='Auto' ";  
 //  $xsql ="Select * from gpsviajes where vehid = $vehid ";  
@@ -233,6 +232,7 @@ private function addviajeAuto($vehid, $edo) {
 
 
 private function addviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip) {
+  date_default_timezone_set('America/Chihuahua'); 
   $xsql = "Select rupid from ruptela order by rupid desc limit 1";
   $query = $this->db->query($xsql);
   $rupini = 0;
@@ -268,6 +268,7 @@ private function addviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip) {
 }
 
 private function cierraviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip) {
+  date_default_timezone_set('America/Chihuahua'); 
   $xsql ="Select viajeid, vehid, tipo, estatus, fecha1, rupid1, rupid2 from gpsviajes where vehid = $vehid and estatus='Actual' and tipo='AutoSub' ";  
   $this->id = "Uno " ;
   
@@ -316,7 +317,7 @@ private function cierraviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip
 
 
 private function diffecha($f1){
-
+  date_default_timezone_set('America/Chihuahua'); 
  $date1 = new DateTime($f1);
  $date2 = new DateTime("now");
 $df = $date1->diff($date2);
@@ -375,18 +376,19 @@ function pointInPolygon($point, $polygon){
 
 
 public function alta_post(){
+  date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
-  $fecha=date("Y-m-d H:i:s");
+  $fecha=date("Y-m-d H:i:s"); 
   $entro1="Simondon";
   $imei="12345678";
+  $xsql = "Insert into datos set dato='Por aqsimonyo'";
+  $query = $this->db->query($xsql);
   $data = array(
         'datos'=>$entro1,
         'fecha'=>$fecha,
         'imei'=>$imei
     );
 //  $this->db->insert('ruptela',$data);
-
-
   $casa1=array(array(31.698526, -106.387746),
                 array(31.697945, -106.386295),
                 array(31.697130, -106.386589),
@@ -401,7 +403,6 @@ public function alta_post(){
   $pts = "";
   $punto1=array(31.6973616, -106.3867366); // Casa
   $punto2=array(31.722006, -106.473640);  // Base
-
   if ($this->pointInPolygon($punto1, $casa1)){
     $pts=$pts."1 Casa Si";
   }else{
@@ -423,7 +424,6 @@ public function alta_post(){
   }else{
     $pts=$pts."2 Base No";
   }
-
   $accion=$this->rupdata["accion"]; // Temporalmente esta accion
   $imei=$this->rupdata["imei"];
   $encend=$this->rupdata["encend"];
@@ -437,9 +437,8 @@ public function alta_post(){
   $entro1="Nada ";
   $xsql ="Select vehid, empid, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
   $query = $this->db->query($xsql);
-
- // $this->id = $query;
-$this->xp='Entro ';
+  // $this->id = $query;
+  $this->xp='Entro ';
   $estatus = "";
   $carid = 0;
   $latdest = "";
@@ -454,10 +453,7 @@ $this->xp='Entro ';
       $this->lat2 = $latdest;  
       $this->lon2 = $londest;     
   }
-
   if (intval($latact)>0 and intval($lonact)<000){
-    
-    
     $this->xp=$this->xp.$estatus;
     if ($estatus=="Regresa"){
       $lat1 = 31.727693; // Esta es la Base 1  
@@ -535,8 +531,6 @@ $this->xp='Entro ';
         }
       }
     }
-
-
   }
 
   $fecha=date("Y-m-d H:i:s");
@@ -550,6 +544,7 @@ $this->xp='Entro ';
         'longitude'=>$lonact,
         'altitude'=>$dat->altitude,
         'angle'=>$dat->angle,
+        'nvo'=>'Z',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
@@ -557,12 +552,7 @@ $this->xp='Entro ';
         'encend'=>$encend,
         'eventid'=>$dat->event_id
     );
-
-
-
-
   $this->db->insert('ruptela',$data);
-
   $id=$this->db->insert_id();
   if ($id>0){
       $respuesta = array(
@@ -572,28 +562,17 @@ $this->xp='Entro ';
         $respuesta = array(
           'error' => TRUE);
    }
-
-
-   //$myString = print_r($this->xp, TRUE);
-   $xsql = "Insert into datos set dato='$pts', vehid=$vehid";
-   $query = $this->db->query($xsql);
-
-
-
-
-
+  //$myString = print_r($this->xp, TRUE);
+  $xsql = "Insert into datos set dato='$pts', vehid=$vehid";
+  $query = $this->db->query($xsql);
   $respuesta = array('error' => FALSE, 'vehid' => $this->rupdata);
   $this->response( $respuesta ); 
 }
-
-
-
 /*************************************** */
-
 public function alta2_post(){
+  date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
  // $this->rupdata = $this->post();
-  
 /*
   $v=8;
   $xsql ="Select vehid, latitude, longitude from ruptela where vehid=$v"; 
@@ -676,7 +655,6 @@ $this->xp='Entro ';
   }
   
   if (intval($latact)>0 and intval($lonact)<000){
-    
     $this->xp=$this->xp.$estatus;
     if ($estatus=="Regresa"){
       $lat1 = 31.727693; // Esta es la Base 1  
@@ -886,70 +864,60 @@ $query = $this->db->query($xsql);
   return $x * pi() / 180; 
  }
 
- private function getKilometros($lat1, $lon1, $lat2, $lon2) {
-      $r = 6378.137; // Radio de la tierra en km
-      $dLat = $this->rad($lat2 - $lat1);
-      $dLong = $this->rad($lon2 - $lon1);
-      $a = sin($dLat / 2) * sin($dLat / 2) + cos($this->rad($lat1)) * cos($this->rad($lat2)) * sin($dLong / 2) * sin($dLong / 2);
-      $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-      $d = $r * $c;
-      return(number_format($d, 3)); 
- }  
+private function getKilometros($lat1, $lon1, $lat2, $lon2) {
+    $r = 6378.137; // Radio de la tierra en km
+    $dLat = $this->rad($lat2 - $lat1);
+    $dLong = $this->rad($lon2 - $lon1);
+    $a = sin($dLat / 2) * sin($dLat / 2) + cos($this->rad($lat1)) * cos($this->rad($lat2)) * sin($dLong / 2) * sin($dLong / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    $d = $r * $c;
+    return(number_format($d, 3)); 
+}  
 
 private function getdatos(){
-
-// Fetch content and determine boundary
-$raw_data = file_get_contents('php://input');
-$boundary = substr($raw_data, 0, strpos($raw_data, "\r\n"));
-
-// Fetch each part
-$parts = array_slice(explode($boundary, $raw_data), 1);
-$data = array();
-
-foreach ($parts as $part) {
-    // If this is the last part, break
-    if ($part == "--\r\n") break; 
-
-    // Separate content from headers
-    $part = ltrim($part, "\r\n");
-    list($raw_headers, $body) = explode("\r\n\r\n", $part, 2);
-
-    // Parse the headers list
-    $raw_headers = explode("\r\n", $raw_headers);
-    $headers = array();
-    foreach ($raw_headers as $header) {
-        list($name, $value) = explode(':', $header);
-        $headers[strtolower($name)] = ltrim($value, ' '); 
-    } 
-    // Parse the Content-Disposition to get the field name, etc.
-    if (isset($headers['content-disposition'])) {
-        $filename = null;
-        preg_match(
-            '/^(.+); *name="([^"]+)"(; *filename="([^"]+)")?/', 
-            $headers['content-disposition'], 
-            $matches
-        );
-        list(, $type, $name) = $matches;
-        isset($matches[4]) and $filename = $matches[4]; 
-
-        // handle your fields here
-        switch ($name) {
-            // this is a file upload
-            case 'userfile':
-                 file_put_contents($filename, $body);
-                 break;
-
-            // default for all other files is to populate $data
-            default: 
-                 $data[$name] = substr($body, 0, strlen($body) - 2);
-                 break;
-        } 
-    }
-
-}
-$this->rupdata=$data;
-
-
+  // Fetch content and determine boundary
+  $raw_data = file_get_contents('php://input');
+  $boundary = substr($raw_data, 0, strpos($raw_data, "\r\n"));
+  // Fetch each part
+  $parts = array_slice(explode($boundary, $raw_data), 1);
+  $data = array();
+  foreach ($parts as $part) {
+      // If this is the last part, break
+      if ($part == "--\r\n") break; 
+      // Separate content from headers
+      $part = ltrim($part, "\r\n");
+      list($raw_headers, $body) = explode("\r\n\r\n", $part, 2);
+      // Parse the headers list
+      $raw_headers = explode("\r\n", $raw_headers);
+      $headers = array();
+      foreach ($raw_headers as $header) {
+          list($name, $value) = explode(':', $header);
+          $headers[strtolower($name)] = ltrim($value, ' '); 
+      } 
+      // Parse the Content-Disposition to get the field name, etc.
+      if (isset($headers['content-disposition'])) {
+          $filename = null;
+          preg_match(
+              '/^(.+); *name="([^"]+)"(; *filename="([^"]+)")?/', 
+              $headers['content-disposition'], 
+              $matches
+          );
+          list(, $type, $name) = $matches;
+          isset($matches[4]) and $filename = $matches[4]; 
+          // handle your fields here
+          switch ($name) {
+              // this is a file upload
+              case 'userfile':
+                  file_put_contents($filename, $body);
+                  break;
+              // default for all other files is to populate $data
+              default: 
+                  $data[$name] = substr($body, 0, strlen($body) - 2);
+                  break;
+          } 
+      }
+  }
+  $this->rupdata=$data;
 }
 
 
@@ -996,12 +964,10 @@ $this->rupdata=$data;
             var dt = new Date(t*1000);
             console.log("datetime "+dt);
 */
-
-
   }
 /************************************************************************/
-
   public function enviarcarta_post(){
+    date_default_timezone_set('America/Chihuahua'); 
     $data = $this->post();
     $vehid = $data['vehid']; //
     $fecha=date("Y-m-d H:i:s");  
@@ -1011,12 +977,8 @@ $this->rupdata=$data;
     if ($query){
       $xrec=$vehid;
     }
-  
     $respuesta = array('error' => FALSE, 'vehid' => $xrec);
     $this->response( $respuesta );
-  
   }  
-
 /************************************************************************/
-
 }
