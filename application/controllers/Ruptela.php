@@ -746,7 +746,6 @@ $this->xp='Entro ';
         'altitude'=>$dat->altitude,
         'angle'=>$dat->angle,
         'satelites'=>$dat->satellites,
-        'nvo'=>'H',
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
         'vehid'=>$vehid,
