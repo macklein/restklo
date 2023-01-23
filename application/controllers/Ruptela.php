@@ -544,7 +544,7 @@ public function alta_post(){
         'longitude'=>$lonact,
         'altitude'=>$dat->altitude,
         'angle'=>$dat->angle,
-        'nvo'=>'R',
+        'nvo'=>'T',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
