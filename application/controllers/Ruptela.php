@@ -112,19 +112,19 @@ private function NumEstado($edo){
       $numedo = 2;
       break;
     case "EnRuta";
-      $numedo = 5;
+      $numedo = 3;
       break;
     case "EnCte";
+      $numedo = 4;
+      break;
+    case "Descargando";
+      $numedo = 5;
+      break;
+    case "Regresando";
       $numedo = 6;
       break;
-    case "Regresa";
-      $numedo = 7;
-      break;
-    case "SinCarta";
-      $numedo = 8;
-      break;      
     case "Fuera";
-      $numedo = 9;
+      $numedo = 7;
       break;
   }
   return $numedo;
@@ -158,6 +158,25 @@ private function SigEstado($edo){
   }
   return $numedo;
 }
+
+
+private function addEstado($vehid, $edo) {
+  date_default_timezone_set('America/Chihuahua'); 
+  $numedo = $this->NumEstado($edo);
+  $fecha=date("Y-m-d H:i:s");
+  $xsql = "Update vehstados set estatus='Term' where vehid=$vehid";
+  $query = $this->db->query($xsql);
+
+  $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', estado='$edo', numedo=$numedo, estatus='Actual' ";
+  $query = $this->db->query($xsql);
+
+  $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
+  $query = $this->db->query($xsql);
+  $respuesta = array('error' => TRUE, "message" => "Listo");
+  $this->response( $respuesta );
+}
+  
+
 
 
 private function addviajeAuto($vehid, $edo) {
@@ -381,7 +400,9 @@ public function alta_post(){
   $fecha=date("Y-m-d H:i:s"); 
   $entro1="Simondon";
   $imei="12345678";
-  $xsql = "Insert into datos set dato='Por aqsimonyo'";
+  $bodega1=array(31.72251780, -106.474329); 
+  $bodega2=array(31.71162765, -106.425314); 
+  $xsql = "Insert into datos set dato='Por aqsimonyo new'";
   $query = $this->db->query($xsql);
   $data = array(
         'datos'=>$entro1,
@@ -389,6 +410,8 @@ public function alta_post(){
         'imei'=>$imei
     );
 //  $this->db->insert('ruptela',$data);
+$pts = "";
+/*
   $casa1=array(array(31.698526, -106.387746),
                 array(31.697945, -106.386295),
                 array(31.697130, -106.386589),
@@ -400,7 +423,6 @@ public function alta_post(){
               array(31.726053, -106.475488),
               array(31.721962, -106.472025),
             array(31.721103, -106.471666));
-  $pts = "";
   $punto1=array(31.6973616, -106.3867366); // Casa
   $punto2=array(31.722006, -106.473640);  // Base
   if ($this->pointInPolygon($punto1, $casa1)){
@@ -424,6 +446,7 @@ public function alta_post(){
   }else{
     $pts=$pts."2 Base No";
   }
+  */
   $accion=$this->rupdata["accion"]; // Temporalmente esta accion
   $imei=$this->rupdata["imei"];
   $encend=$this->rupdata["encend"];
@@ -431,12 +454,284 @@ public function alta_post(){
   $dat=json_decode($this->rupdata["datosm"]);
   $latact = $dat->latitude/10000000;
   $lonact = $dat->longitude/10000000;
-  $this->lat1 = $latact;
+  $this->lat1 = $latact; 
   $this->lon1 = $lonact; 
   $dist=7647;
   $entro1="Nada ";
   $xsql ="Select vehid, empid, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
   $query = $this->db->query($xsql);
+  $numedo = 0;
+  // $this->id = $query;
+  $this->xp='Entro ';
+  $estatus = "";
+  $carid = 0;
+  $estid = 0;
+  $latdest = "";
+  $londest = "";
+  if ($query) {
+      $row = $query->row();
+      $vehid = $row->vehid;
+      $xsql ="Select * from vehstados where vehid=$vehid order by estid desc limit 1";  
+      $queryedo = $this->db->query($xsql);
+      if ($queryedo) {
+        $rowedo = $queryedo->row();
+        $estid = $rowedo->estid;
+        $estado = $rowedo->estado;
+        $numedo = $rowedo->numedo;
+        $fechahora = $rowedo->fechahora;
+        $fechafin = $rowedo->fechafin;
+      }  
+      $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
+      $queryord = $this->db->query($xsql);
+      if ($queryord) {
+        $rord = $queryord->row();
+        $ordid = $rord->ordid;
+        $sitid1 = $rord->sitid1;
+        $sitid2 = $rord->sitid2;
+        $carid = $rord->carid;
+        $cliid = $rord->cliid;
+        if ($sitid1>0 && $sitid2>0){
+          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
+          $querys1 = $this->db->query($xsql);
+          if ($querys1){
+            $rows1 = $query1->row();
+            $lats1 = $rows1->latitude;
+            $lons1 = $rows1->longitude;
+            $lleg1 = $rows1->llegada;
+            $sal1 = $rows1->salida;
+          }
+          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
+          $querys2 = $this->db->query($xsql);
+          if ($querys2){
+            $rows2 = $query2->row();
+            $lats2 = $rows2->latitude;
+            $lons2 = $rows2->longitude;
+            $lleg2 = $rows2->llegada;
+            $sal2 = $rows2->salida;
+          }
+        }          
+          
+      }
+      $estatus = $row->estatus;
+      $carid = $row->carid;
+      $latdest = $row->latitude;
+      $londest = $row->longitude;   
+      $this->lat2 = $latdest;  
+      $this->lon2 = $londest;     
+  }
+
+  if ($ordid==0 && ($numedo==0 || $numedo>2)) {
+    $dist1 = $this->getKilometros($latact, $lonact, $bodega1[0], $bodega1[1]);
+    $dist2 = $this->getKilometros($latact, $lonact, $bodega2[0], $bodega2[1]);
+    $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
+    if ($dist1<.5){ // Primer Estatus cuando esta en Bodega
+      $this->id = "Agregar Estado en Base 1 " ;
+    //  if ($this->addviajeAuto($vehid, "EnBodega1")){
+      if ($this->addEstado($vehid, "EnBase1")){
+          $entro1 = " 6 ";
+      }
+    }
+    if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
+      $this->id = "Agregar Estado en Base 2" ;
+    //  if ($this->addviajeAuto($vehid, "EnBodega2")){
+      if ($this->addEstado($vehid, "EnBase2")){
+          $entro1 = " 7 ";
+      }
+    }
+  }
+
+/*
+  if (intval($latact)>0 and intval($lonact)<000){
+    $this->xp=$this->xp.$estatus;
+    if ($estatus=="Regresa"){
+      //Esto ya lo cambie como $bodega1, $bodega2
+      $lat1 = 31.727693; // Esta es la Base 1  
+      $lon1 = -106.476500; 
+      $lat2 = 31.652421; // Esta es la Base 2 
+      $lon2 = -106.336854; 
+      if ($vehid =8){
+        $lat1 = $latact;
+        $lon1 = $lonact;
+      }
+//      $dist1 = $this->getKilometros($latact, $lonact, $lat1, $lon1);
+//      $dist2 = $this->getKilometros($latact, $lonact, $lat2, $lon2);
+
+      $dist1 = $this->getKilometros($latact, $lonact, $bodega1[0], $bodega1[1]);
+      $dist2 = $this->getKilometros($latact, $lonact, $bodega2[0], $bodega2[1]);
+
+      $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
+      if ($dist1<.5){ // Agregar Viaje Cuando va llegando con el Cliente
+        $this->id = "Agregar Viaje" ;
+        if ($this->addviajeAuto($vehid, "EnBase1")){
+          $entro1 = " 6 ";
+        }
+      }
+      if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
+        $this->id = "Agregar Viaje" ;
+        if ($this->addviajeAuto($vehid, "EnBase2")){
+          $entro1 = " 7 ";
+        }
+      }
+    }
+
+    if ($estatus=="EnBase1" or $estatus=="EnBase2"){
+      // Esta es la Base de Ferrocarril
+      // Agregar Viaje Automatico en la Salida de la Base
+      if ($estatus=="EnBase1"){
+        $this->lat2 = 31.727693; // Esta es la Base 1  
+        $this->lon2 = -106.476500; 
+      }
+      if ($estatus=="EnBase2"){
+        $this->lat2 = 31.652421; // Esta es la Base 2 
+        $this->lon2 = -106.336854; 
+      }
+      $dist = $this->getKilometros($latact, $lonact, $this->lat2, $this->lon2);
+      if ($dist>1.2){ // Agregar Viaje Cuando Sale
+        if (intval($carid)>0){
+          $estnew = "EnRuta";
+        }else{
+          $estnew = "SinCarta";
+        }
+        if ($this->addviajeAuto($vehid, $estnew)){
+          $entro1 = " 3 ";
+        } 
+      }
+    }
+  
+    if (intval($latdest)>0 and intval($londest)<0){
+      $dist = $this->getKilometros($latact, $lonact, $latdest, $londest);
+      
+      if ($estatus=="EnRuta" or $estatus=="SinCarta"){
+        if ($dist<.5){ // Agregar Viaje Cuando va llegando con el Cliente
+          if ($estatus=="EnRuta"){
+            $estnew = "EnCte";
+          }
+          if ($estatus=="SinCarta"){
+            $estnew = "EnSitio";
+          }
+          $this->id = "Agregar Viaje" ;
+          if ($this->addviajeAuto($vehid, $estnew)){
+            $entro1 = " 4 ";
+          }
+        }
+      }      
+      if ($estatus=="EnCte" or $estatus=="EnSitio"){
+        if ($dist>1.2){ // Agregar Viaje Cuando Sale
+          $estnew = "Regresa";
+          if ($this->addviajeAuto($vehid, $estnew)){
+            $entro1 = " 3 ";
+          } 
+        }
+      }
+    }
+  }
+*/
+
+
+  $fecha=date("Y-m-d H:i:s");
+  $data = array(
+        'datos'=>$entro1,
+        'fecha'=>$fecha,
+        'imei'=>$imei,
+        'imeical'=>$imeic,
+        'timestam'=>$dat->timestamp,
+        'latitude'=>$latact,
+        'longitude'=>$lonact,
+        'altitude'=>$dat->altitude,
+        'angle'=>$dat->angle,
+        'nvo'=>'H',
+        'satelites'=>$dat->satellites,
+        'hdop'=>$dat->hdop,
+        'speed'=>$dat->speed,
+        'vehid'=>$vehid,
+        'encend'=>$encend,
+        'eventid'=>$dat->event_id
+    );
+  $this->db->insert('ruptela',$data);
+  $id=$this->db->insert_id();
+  if ($id>0){
+      $respuesta = array(
+        'error' => FALSE,
+        'id' => $data);
+    }else{
+        $respuesta = array(
+          'error' => TRUE);
+   }
+  //$myString = print_r($this->xp, TRUE);
+  $xsql = "Insert into datos set dato='$pts', vehid=$vehid";
+  $query = $this->db->query($xsql);
+  $respuesta = array('error' => FALSE, 'vehid' => $this->rupdata);
+  $this->response( $respuesta ); 
+}
+/*************************************** */
+
+public function alta0_post(){
+  date_default_timezone_set('America/Chihuahua'); 
+  $this->getdatos();
+  $fecha=date("Y-m-d H:i:s"); 
+  $entro1="Simondon";
+  $imei="12345678";
+  $bodega1=array(31.72251780, -106.474329); 
+  $bodega2=array(31.71162765, -106.425314); 
+  $xsql = "Insert into datos set dato='Por aqsimonyo new'";
+  $query = $this->db->query($xsql);
+  $data = array(
+        'datos'=>$entro1,
+        'fecha'=>$fecha,
+        'imei'=>$imei
+    );
+//  $this->db->insert('ruptela',$data);
+$pts = "";
+/*
+  $casa1=array(array(31.698526, -106.387746),
+                array(31.697945, -106.386295),
+                array(31.697130, -106.386589),
+              array(31.697461, -106.387661),
+              array(31.698066, -106.388429));
+  $base1=array(array(31.720805, -106.473288),
+                array(31.723105, -106.476260),
+                array(31.725259, -106.477451),
+              array(31.726053, -106.475488),
+              array(31.721962, -106.472025),
+            array(31.721103, -106.471666));
+  $punto1=array(31.6973616, -106.3867366); // Casa
+  $punto2=array(31.722006, -106.473640);  // Base
+  if ($this->pointInPolygon($punto1, $casa1)){
+    $pts=$pts."1 Casa Si";
+  }else{
+    $pts=$pts."1 Casa No";
+  }
+  if ($this->pointInPolygon($punto1, $base1)){
+    $pts=$pts."1 Base Si";
+  }else{
+    $pts=$pts."1 Base No";
+  }
+
+  if ($this->pointInPolygon($punto2, $casa1)){
+    $pts=$pts."2 Casa Si";
+  }else{
+    $pts=$pts."2 Casa No";
+  }
+  if ($this->pointInPolygon($punto2, $base1)){
+    $pts=$pts."2 Base Si";
+  }else{
+    $pts=$pts."2 Base No";
+  }
+  */
+  $accion=$this->rupdata["accion"]; // Temporalmente esta accion
+  $imei=$this->rupdata["imei"];
+  $encend=$this->rupdata["encend"];
+  $imeic=$this->rupdata["imeic"];
+  $dat=json_decode($this->rupdata["datosm"]);
+  $latact = $dat->latitude/10000000;
+  $lonact = $dat->longitude/10000000;
+  $this->lat1 = $latact; 
+  $this->lon1 = $lonact; 
+  $dist=7647;
+  $entro1="Nada ";
+  $xsql ="Select vehid, empid, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
+  $query = $this->db->query($xsql);
+  $numedo = 0;
   // $this->id = $query;
   $this->xp='Entro ';
   $estatus = "";
@@ -446,6 +741,33 @@ public function alta_post(){
   if ($query) {
       $row = $query->row();
       $vehid = $row->vehid;
+      $xsql ="Select * from vehstados where vehid=$vehid order by estid desc limit 1";  
+      $queryedo = $this->db->query($xsql);
+      if ($queryedo) {
+        $rowedo = $queryedo->row();
+        $estid = $rowedo->estid;
+        $estado = $rowedo->estado;
+        $numedo = $rowedo->numedo;
+        $fechahora = $rowedo->fechahora;
+        $fechafin = $rowedo->fechafin;
+      }  
+      $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
+      $queryord = $this->db->query($xsql);
+      if ($queryord) {
+        $rord = $queryord->row();
+        $ordid = $rord->ordid;
+        $sitid1 = $rord->sitid1;
+        $sitid2 = $rord->sitid2;
+        $carid = $rord->carid;
+        $cliid = $rord->cliid;
+        if ($sitid1>0 && $sitid2>0){
+          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
+          $querys1 = $this->db->query($xsql);
+          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
+          $querys2 = $this->db->query($xsql);
+        }          
+          
+      }
       $estatus = $row->estatus;
       $carid = $row->carid;
       $latdest = $row->latitude;
@@ -454,8 +776,12 @@ public function alta_post(){
       $this->lon2 = $londest;     
   }
   if (intval($latact)>0 and intval($lonact)<000){
+
+
+
     $this->xp=$this->xp.$estatus;
     if ($estatus=="Regresa"){
+      //Esto ya lo cambie como $bodega1, $bodega2
       $lat1 = 31.727693; // Esta es la Base 1  
       $lon1 = -106.476500; 
       $lat2 = 31.652421; // Esta es la Base 2 
@@ -464,8 +790,12 @@ public function alta_post(){
         $lat1 = $latact;
         $lon1 = $lonact;
       }
-      $dist1 = $this->getKilometros($latact, $lonact, $lat1, $lon1);
-      $dist2 = $this->getKilometros($latact, $lonact, $lat2, $lon2);
+//      $dist1 = $this->getKilometros($latact, $lonact, $lat1, $lon1);
+//      $dist2 = $this->getKilometros($latact, $lonact, $lat2, $lon2);
+
+      $dist1 = $this->getKilometros($latact, $lonact, $bodega1[0], $bodega1[1]);
+      $dist2 = $this->getKilometros($latact, $lonact, $bodega2[0], $bodega2[1]);
+
       $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
       if ($dist1<.5){ // Agregar Viaje Cuando va llegando con el Cliente
         $this->id = "Agregar Viaje" ;
@@ -569,6 +899,10 @@ public function alta_post(){
   $this->response( $respuesta ); 
 }
 /*************************************** */
+
+
+
+
 public function alta2_post(){
   date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
