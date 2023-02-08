@@ -481,6 +481,41 @@ public function alta_post(){
         $sitid2 = $rord->sitid2;
         $carid = $rord->carid;
         $cliid = $rord->cliid;
+
+
+        if ($sitid1>0 && $sitid2>0){
+          $xsqldat = "Insert into datos set dato='7 imei = $imei' ";
+          $querydat = $this->db->query($xsqldat);
+  
+          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
+          $querys1 = $this->db->query($xsql);
+          if ($querys1){
+            $rows1 = $query1->row();
+            $lats1 = $rows1->latitude;
+            $lons1 = $rows1->longitude;
+            $lleg1 = $rows1->llegada;
+            $sal1 = $rows1->salida;
+            $xsqldat = "Insert into datos set dato='8 imei = $imei' ";
+            $querydat = $this->db->query($xsqldat);
+    
+          }
+          $xsqldat = "Insert into datos set dato='9 imei = $imei' ";
+          $querydat = $this->db->query($xsqldat);
+  
+          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
+          $querys2 = $this->db->query($xsql);
+          if ($querys2){
+            $rows2 = $query2->row();
+            $lats2 = $rows2->latitude;
+            $lons2 = $rows2->longitude;
+            $lleg2 = $rows2->llegada;
+            $sal2 = $rows2->salida;
+            $xsqldat = "Insert into datos set dato='10 imei = $imei' ";
+            $querydat = $this->db->query($xsqldat);
+    
+          }
+        }          
+ 
       }
     }
 
