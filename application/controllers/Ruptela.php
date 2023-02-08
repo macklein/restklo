@@ -394,7 +394,7 @@ function pointInPolygon($point, $polygon){
 }
 
 
-public function altaNo_post(){
+public function alta_post(){
   date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
@@ -558,7 +558,7 @@ public function altaNo_post(){
   $this->response( $respuesta ); 
 }
 
-public function alta_post(){
+public function altaR_post(){
   date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
