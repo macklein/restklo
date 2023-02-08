@@ -173,7 +173,7 @@ private function addEstado($vehid, $edo) {
   $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
   $query = $this->db->query($xsql);
   $respuesta = array('error' => TRUE, "message" => "Listo");
-  $this->response( $respuesta );
+//  $this->response( $respuesta );
 }
   
 
@@ -394,7 +394,7 @@ function pointInPolygon($point, $polygon){
 }
 
 
-public function alta_post(){
+public function altaNo_post(){
   date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
@@ -514,20 +514,51 @@ public function alta_post(){
             $querydat = $this->db->query($xsqldat);
     
           }
-        }          
- 
+        }           
       }
     }
-
-
+    $xsqldat = "Insert into datos set dato='5 C imei = $imei' ";
+    $querydat = $this->db->query($xsqldat);
+    $estatus = $row->estatus;
+    $carid = $row->carid;
+    $latdest = $row->latitude;
+    $londest = $row->longitude;   
+    $this->lat2 = $latdest;  
+    $this->lon2 = $londest;    
   }
+  $xsqldat = "Insert into datos set dato='11 imei = $imei' ";
+  $querydat = $this->db->query($xsqldat);
+
+  if ($ordid==0 && ($numedo==0 || $numedo>2)) {
+    $dist1 = $this->getKilometros($latact, $lonact, $bodega1[0], $bodega1[1]);
+    $dist2 = $this->getKilometros($latact, $lonact, $bodega2[0], $bodega2[1]);
+    $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
+    $xsqldat = "Insert into datos set dato='12 imei = $imei' ";
+    $querydat = $this->db->query($xsqldat);
+
+    if ($dist1<.5){ // Primer Estatus cuando esta en Bodega
+      $this->id = "Agregar Estado en Base 1 " ;
+    //  if ($this->addviajeAuto($vehid, "EnBodega1")){
+      $xsqldat = "Insert into datos set dato='13 imei = $imei' ";
+      $querydat = $this->db->query($xsqldat);
+      $this->addEstado($vehid, "EnBase1");
+    }
+    if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
+      $this->id = "Agregar Estado en Base 2" ;
+    //  if ($this->addviajeAuto($vehid, "EnBodega2")){
+      $xsqldat = "Insert into datos set dato='14 imei = $imei' ";
+      $querydat = $this->db->query($xsqldat);
+      $this->addEstado($vehid, "EnBase2");
+    }
+  }
+
 
 
   $respuesta = array('error' => FALSE, 'vehid' => $imei);
   $this->response( $respuesta ); 
 }
 
-public function altaR_post(){
+public function alta_post(){
   date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
