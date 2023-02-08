@@ -710,14 +710,14 @@ public function alta_post(){
     //  if ($this->addviajeAuto($vehid, "EnBodega1")){
       $xsqldat = "Insert into datos set dato='13 imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
-      $this->addEstado($vehid, "EnBase1");
+    //  $this->addEstado($vehid, "EnBase1");
     }
     if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
       $this->id = "Agregar Estado en Base 2" ;
     //  if ($this->addviajeAuto($vehid, "EnBodega2")){
       $xsqldat = "Insert into datos set dato='14 imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
-      $this->addEstado($vehid, "EnBase2");
+    //  $this->addEstado($vehid, "EnBase2");
     }
   }
 
