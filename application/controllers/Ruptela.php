@@ -468,6 +468,7 @@ $pts = "";
   $estatus = "";
   $carid = 0;
   $estid = 0;
+  $ordid = 0;
   $latdest = "";
   $londest = "";
   if ($query) {
@@ -491,52 +492,59 @@ $pts = "";
       }  
       $xsqldat = "Insert into datos set dato='5'";
       $querydat = $this->db->query($xsqldat);
-
-      $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
+     
+      $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='Pend' ";
       $queryord = $this->db->query($xsql);
-      if ($queryord) {
-        $rord = $queryord->row();
-        $ordid = $rord->ordid;
-        $sitid1 = $rord->sitid1;
-        $sitid2 = $rord->sitid2;
-        $carid = $rord->carid;
-        $cliid = $rord->cliid;
-        $xsqldat = "Insert into datos set dato='6'";
-        $querydat = $this->db->query($xsqldat);
+      $row = $query->row();
+      $numrows = $row->numrows;
+      if ($numrows>0){
 
-        if ($sitid1>0 && $sitid2>0){
-          $xsqldat = "Insert into datos set dato='7'";
+        $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
+        $queryord = $this->db->query($xsql);
+        if ($queryord) {
+          $xsqldat = "Insert into datos set dato='6'";
           $querydat = $this->db->query($xsqldat);
   
-          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
-          $querys1 = $this->db->query($xsql);
-          if ($querys1){
-            $rows1 = $query1->row();
-            $lats1 = $rows1->latitude;
-            $lons1 = $rows1->longitude;
-            $lleg1 = $rows1->llegada;
-            $sal1 = $rows1->salida;
-            $xsqldat = "Insert into datos set dato='8'";
-            $querydat = $this->db->query($xsqldat);
-    
-          }
-          $xsqldat = "Insert into datos set dato='9'";
-          $querydat = $this->db->query($xsqldat);
-  
-          $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
-          $querys2 = $this->db->query($xsql);
-          if ($querys2){
-            $rows2 = $query2->row();
-            $lats2 = $rows2->latitude;
-            $lons2 = $rows2->longitude;
-            $lleg2 = $rows2->llegada;
-            $sal2 = $rows2->salida;
-            $xsqldat = "Insert into datos set dato='10'";
-            $querydat = $this->db->query($xsqldat);
-    
-          }
-        }          
+          $rord = $queryord->row();
+          $ordid = $rord->ordid;
+          $sitid1 = $rord->sitid1;
+          $sitid2 = $rord->sitid2;
+          $carid = $rord->carid;
+          $cliid = $rord->cliid;
           
+          if ($sitid1>0 && $sitid2>0){
+            $xsqldat = "Insert into datos set dato='7'";
+            $querydat = $this->db->query($xsqldat);
+    
+            $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
+            $querys1 = $this->db->query($xsql);
+            if ($querys1){
+              $rows1 = $query1->row();
+              $lats1 = $rows1->latitude;
+              $lons1 = $rows1->longitude;
+              $lleg1 = $rows1->llegada;
+              $sal1 = $rows1->salida;
+              $xsqldat = "Insert into datos set dato='8'";
+              $querydat = $this->db->query($xsqldat);
+      
+            }
+            $xsqldat = "Insert into datos set dato='9'";
+            $querydat = $this->db->query($xsqldat);
+    
+            $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
+            $querys2 = $this->db->query($xsql);
+            if ($querys2){
+              $rows2 = $query2->row();
+              $lats2 = $rows2->latitude;
+              $lons2 = $rows2->longitude;
+              $lleg2 = $rows2->llegada;
+              $sal2 = $rows2->salida;
+              $xsqldat = "Insert into datos set dato='10'";
+              $querydat = $this->db->query($xsqldat);
+      
+            }
+          }          
+        }    
       }
       $estatus = $row->estatus;
       $carid = $row->carid;
