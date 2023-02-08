@@ -519,12 +519,15 @@ public function alta_post(){
     }
     $xsqldat = "Insert into datos set dato='5 C imei = $imei' ";
     $querydat = $this->db->query($xsqldat);
+  
+  /*
     $estatus = $row->estatus;
     $carid = $row->carid;
     $latdest = $row->latitude;
     $londest = $row->longitude;   
     $this->lat2 = $latdest;  
-    $this->lon2 = $londest;    
+    $this->lon2 = $londest;   
+    */ 
   }
   $xsqldat = "Insert into datos set dato='11 imei = $imei' ";
   $querydat = $this->db->query($xsqldat);
