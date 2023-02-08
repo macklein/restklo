@@ -404,6 +404,33 @@ public function alta_post(){
   $bodega2=array(31.71162765, -106.425314); 
   $xsql = "Insert into datos set dato='Por aqsimonyo new 2323'";
   $query = $this->db->query($xsql);
+  $pts = "";
+  $accion=$this->rupdata["accion"]; // Temporalmente esta accion
+  $imei=$this->rupdata["imei"];
+  $encend=$this->rupdata["encend"];
+  $imeic=$this->rupdata["imeic"];
+  $dat=json_decode($this->rupdata["datosm"]);
+  $latact = $dat->latitude/10000000;
+  $lonact = $dat->longitude/10000000;
+  $this->lat1 = $latact; 
+  $this->lon1 = $lonact; 
+  $dist=7647;
+  $entro1="Nada ";
+  $xsql ="Select vehid, empid, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
+  $query = $this->db->query($xsql);
+  $numedo = 0;
+  // $this->id = $query;
+  $xsqldat = "Insert into datos set dato='2 imei = $imei' ";
+  $querydat = $this->db->query($xsqldat);
+  $this->xp='Entro ';
+  $estatus = "";
+  $carid = 0;
+  $estid = 0;
+  $ordid = 0;
+  $latdest = "";
+  $londest = "";
+
+
   $respuesta = array('error' => FALSE, 'vehid' => $imei);
   $this->response( $respuesta ); 
 }
@@ -423,44 +450,7 @@ public function altaR_post(){
         'fecha'=>$fecha,
         'imei'=>$imei
     );
-//  $this->db->insert('ruptela',$data);
-$pts = "";
-/*
-  $casa1=array(array(31.698526, -106.387746),
-                array(31.697945, -106.386295),
-                array(31.697130, -106.386589),
-              array(31.697461, -106.387661),
-              array(31.698066, -106.388429));
-  $base1=array(array(31.720805, -106.473288),
-                array(31.723105, -106.476260),
-                array(31.725259, -106.477451),
-              array(31.726053, -106.475488),
-              array(31.721962, -106.472025),
-            array(31.721103, -106.471666));
-  $punto1=array(31.6973616, -106.3867366); // Casa
-  $punto2=array(31.722006, -106.473640);  // Base
-  if ($this->pointInPolygon($punto1, $casa1)){
-    $pts=$pts."1 Casa Si";
-  }else{
-    $pts=$pts."1 Casa No";
-  }
-  if ($this->pointInPolygon($punto1, $base1)){
-    $pts=$pts."1 Base Si";
-  }else{
-    $pts=$pts."1 Base No";
-  }
-
-  if ($this->pointInPolygon($punto2, $casa1)){
-    $pts=$pts."2 Casa Si";
-  }else{
-    $pts=$pts."2 Casa No";
-  }
-  if ($this->pointInPolygon($punto2, $base1)){
-    $pts=$pts."2 Base Si";
-  }else{
-    $pts=$pts."2 Base No";
-  }
-  */
+  $pts = "";
   $accion=$this->rupdata["accion"]; // Temporalmente esta accion
   $imei=$this->rupdata["imei"];
   $encend=$this->rupdata["encend"];
