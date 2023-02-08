@@ -719,7 +719,7 @@ $pts = "";
           'error' => TRUE);
    }
   //$myString = print_r($this->xp, TRUE);
-  $xsql = "Insert into datos set dato='$pts', vehid=$vehid";
+  $xsql = "Insert into datos set dato='T imei = $imei ********************' ";
   $query = $this->db->query($xsql);
   $respuesta = array('error' => FALSE, 'vehid' => $this->rupdata);
   $this->response( $respuesta ); 
