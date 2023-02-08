@@ -402,8 +402,10 @@ public function alta_post(){
   $imei="12345678";
   $bodega1=array(31.72251780, -106.474329); 
   $bodega2=array(31.71162765, -106.425314); 
-  $xsql = "Insert into datos set dato='Por aqsimonyo new'";
+  $xsql = "Insert into datos set dato='Por aqsimonyo new 2323'";
   $query = $this->db->query($xsql);
+  $respuesta = array('error' => FALSE, 'vehid' => $imei);
+  $this->response( $respuesta ); 
 }
 
 public function altaR_post(){
