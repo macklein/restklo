@@ -477,20 +477,25 @@ $pts = "";
       $xsqldat = "Insert into datos set dato='3'";
       $querydat = $this->db->query($xsqldat);
     
-      $xsql ="Select * from vehstados where vehid=$vehid order by estid desc limit 1";  
+      $xsql="SELECT count(*) AS numrows FROM vehstados where vehid=$vehid and estatus='Actual' limit 1"; 
       $queryedo = $this->db->query($xsql);
-      if ($queryedo) {
-        $rowedo = $queryedo->row();
-        $estid = $rowedo->estid;
-        $estado = $rowedo->estado;
-        $numedo = $rowedo->numedo;
-        $fechahora = $rowedo->fechahora;
-        $fechafin = $rowedo->fechafin;
-        $xsqldat = "Insert into datos set dato='4'";
-        $querydat = $this->db->query($xsqldat);
-      
+      $row = $queryedo->row();
+      $numrows = $row->numrows;
+      if ($numrows>0){
+        $xsql ="Select * from vehstados where vehid=$vehid  and estatus='Actual' limit 1";  
+        $queryedo = $this->db->query($xsql);
+        if ($queryedo) {
+          $rowedo = $queryedo->row();
+          $estid = $rowedo->estid;
+          $estado = $rowedo->estado;
+          $numedo = $rowedo->numedo;
+          $fechahora = $rowedo->fechahora;
+          $fechafin = $rowedo->fechafin;
+          $xsqldat = "Insert into datos set dato='4'";
+          $querydat = $this->db->query($xsqldat);
+        }
       }  
-      $xsqldat = "Insert into datos set dato='5 1'";
+      $xsqldat = "Insert into datos set dato='5 1 R'";
       $querydat = $this->db->query($xsqldat);
      
       $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='Pend' ";
