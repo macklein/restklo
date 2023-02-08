@@ -462,6 +462,8 @@ $pts = "";
   $query = $this->db->query($xsql);
   $numedo = 0;
   // $this->id = $query;
+  $xsqldat = "Insert into datos set dato='2'";
+  $querydat = $this->db->query($xsqldat);
   $this->xp='Entro ';
   $estatus = "";
   $carid = 0;
@@ -471,6 +473,9 @@ $pts = "";
   if ($query) {
       $row = $query->row();
       $vehid = $row->vehid;
+      $xsqldat = "Insert into datos set dato='3'";
+      $querydat = $this->db->query($xsqldat);
+    
       $xsql ="Select * from vehstados where vehid=$vehid order by estid desc limit 1";  
       $queryedo = $this->db->query($xsql);
       if ($queryedo) {
@@ -480,7 +485,13 @@ $pts = "";
         $numedo = $rowedo->numedo;
         $fechahora = $rowedo->fechahora;
         $fechafin = $rowedo->fechafin;
+        $xsqldat = "Insert into datos set dato='4'";
+        $querydat = $this->db->query($xsqldat);
+      
       }  
+      $xsqldat = "Insert into datos set dato='5'";
+      $querydat = $this->db->query($xsqldat);
+
       $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
       $queryord = $this->db->query($xsql);
       if ($queryord) {
@@ -490,7 +501,13 @@ $pts = "";
         $sitid2 = $rord->sitid2;
         $carid = $rord->carid;
         $cliid = $rord->cliid;
+        $xsqldat = "Insert into datos set dato='6'";
+        $querydat = $this->db->query($xsqldat);
+
         if ($sitid1>0 && $sitid2>0){
+          $xsqldat = "Insert into datos set dato='7'";
+          $querydat = $this->db->query($xsqldat);
+  
           $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
           $querys1 = $this->db->query($xsql);
           if ($querys1){
@@ -499,7 +516,13 @@ $pts = "";
             $lons1 = $rows1->longitude;
             $lleg1 = $rows1->llegada;
             $sal1 = $rows1->salida;
+            $xsqldat = "Insert into datos set dato='8'";
+            $querydat = $this->db->query($xsqldat);
+    
           }
+          $xsqldat = "Insert into datos set dato='9'";
+          $querydat = $this->db->query($xsqldat);
+  
           $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
           $querys2 = $this->db->query($xsql);
           if ($querys2){
@@ -508,6 +531,9 @@ $pts = "";
             $lons2 = $rows2->longitude;
             $lleg2 = $rows2->llegada;
             $sal2 = $rows2->salida;
+            $xsqldat = "Insert into datos set dato='10'";
+            $querydat = $this->db->query($xsqldat);
+    
           }
         }          
           
@@ -520,20 +546,33 @@ $pts = "";
       $this->lon2 = $londest;     
   }
 
+  $xsqldat = "Insert into datos set dato='11'";
+  $querydat = $this->db->query($xsqldat);
+
   if ($ordid==0 && ($numedo==0 || $numedo>2)) {
     $dist1 = $this->getKilometros($latact, $lonact, $bodega1[0], $bodega1[1]);
     $dist2 = $this->getKilometros($latact, $lonact, $bodega2[0], $bodega2[1]);
     $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
+    $xsqldat = "Insert into datos set dato='12'";
+    $querydat = $this->db->query($xsqldat);
+
     if ($dist1<.5){ // Primer Estatus cuando esta en Bodega
       $this->id = "Agregar Estado en Base 1 " ;
     //  if ($this->addviajeAuto($vehid, "EnBodega1")){
+      $xsqldat = "Insert into datos set dato='13'";
+      $querydat = $this->db->query($xsqldat);
+  
       if ($this->addEstado($vehid, "EnBase1")){
           $entro1 = " 6 ";
       }
+
     }
     if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
       $this->id = "Agregar Estado en Base 2" ;
     //  if ($this->addviajeAuto($vehid, "EnBodega2")){
+      $xsqldat = "Insert into datos set dato='14'";
+      $querydat = $this->db->query($xsqldat);
+
       if ($this->addEstado($vehid, "EnBase2")){
           $entro1 = " 7 ";
       }
