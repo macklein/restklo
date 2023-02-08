@@ -490,7 +490,7 @@ $pts = "";
         $querydat = $this->db->query($xsqldat);
       
       }  
-      $xsqldat = "Insert into datos set dato='5'";
+      $xsqldat = "Insert into datos set dato='5 R'";
       $querydat = $this->db->query($xsqldat);
      
       $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='Pend' ";
