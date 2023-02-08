@@ -465,6 +465,26 @@ public function alta_post(){
     
     $row = $queryord->row();
     $numrows = $row->numrows;
+    if ($numrows>0){
+      $xsqldat = "Insert into datos set dato='5 2 imei = $imei' ";
+      $querydat = $this->db->query($xsqldat);
+
+      $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
+      $queryord = $this->db->query($xsql);
+      if ($queryord) {
+        $xsqldat = "Insert into datos set dato='6 imei = $imei' ";
+        $querydat = $this->db->query($xsqldat);
+
+        $rord = $queryord->row();
+        $ordid = $rord->ordid;
+        $sitid1 = $rord->sitid1;
+        $sitid2 = $rord->sitid2;
+        $carid = $rord->carid;
+        $cliid = $rord->cliid;
+      }
+    }
+
+
   }
 
 
