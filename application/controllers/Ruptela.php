@@ -404,6 +404,18 @@ public function alta_post(){
   $bodega2=array(31.71162765, -106.425314); 
   $xsql = "Insert into datos set dato='Por aqsimonyo new'";
   $query = $this->db->query($xsql);
+}
+
+public function altaR_post(){
+  date_default_timezone_set('America/Chihuahua'); 
+  $this->getdatos();
+  $fecha=date("Y-m-d H:i:s"); 
+  $entro1="Simondon";
+  $imei="12345678";
+  $bodega1=array(31.72251780, -106.474329); 
+  $bodega2=array(31.71162765, -106.425314); 
+  $xsql = "Insert into datos set dato='Por aqsimonyo new'";
+  $query = $this->db->query($xsql);
   $data = array(
         'datos'=>$entro1,
         'fecha'=>$fecha,
@@ -721,7 +733,7 @@ $pts = "";
   //$myString = print_r($this->xp, TRUE);
   $xsql = "Insert into datos set dato='T imei = $imei ********************' ";
   $query = $this->db->query($xsql);
-  $respuesta = array('error' => FALSE, 'vehid' => $this->rupdata);
+  $respuesta = array('error' => FALSE, 'vehid' => $vehid);
   $this->response( $respuesta ); 
 }
 /*************************************** */
@@ -956,7 +968,7 @@ $pts = "";
   //$myString = print_r($this->xp, TRUE);
   $xsql = "Insert into datos set dato='$pts', vehid=$vehid";
   $query = $this->db->query($xsql);
-  $respuesta = array('error' => FALSE, 'vehid' => $this->rupdata);
+  $respuesta = array('error' => FALSE, 'vehid' => $vehid);
   $this->response( $respuesta ); 
 }
 /*************************************** */
