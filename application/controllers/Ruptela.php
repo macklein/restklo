@@ -482,7 +482,7 @@ public function alta_post(){
         $carid = $rord->carid;
         $cliid = $rord->cliid;
 
-
+/*
         if ($sitid1>0 && $sitid2>0){
           $xsqldat = "Insert into datos set dato='7 imei = $imei' ";
           $querydat = $this->db->query($xsqldat);
@@ -514,7 +514,7 @@ public function alta_post(){
             $querydat = $this->db->query($xsqldat);
     
           }
-        }           
+        }          */ 
       }
     }
     $xsqldat = "Insert into datos set dato='5 C imei = $imei' ";
