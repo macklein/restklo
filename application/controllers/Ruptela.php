@@ -528,29 +528,26 @@ public function alta_post(){
   }
   $xsqldat = "Insert into datos set dato='11 imei = $imei' ";
   $querydat = $this->db->query($xsqldat);
-
+/*
   if ($ordid==0 && ($numedo==0 || $numedo>2)) {
     $dist1 = $this->getKilometros($latact, $lonact, $bodega1[0], $bodega1[1]);
     $dist2 = $this->getKilometros($latact, $lonact, $bodega2[0], $bodega2[1]);
     $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
     $xsqldat = "Insert into datos set dato='12 imei = $imei' ";
     $querydat = $this->db->query($xsqldat);
-
-    if ($dist1<.5){ // Primer Estatus cuando esta en Bodega
+    if ($dist1<.5){ 
       $this->id = "Agregar Estado en Base 1 " ;
-    //  if ($this->addviajeAuto($vehid, "EnBodega1")){
       $xsqldat = "Insert into datos set dato='13 imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
 //      $this->addEstado($vehid, "EnBase1");
     }
-    if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
+    if ($dist2<.5){ 
       $this->id = "Agregar Estado en Base 2" ;
-    //  if ($this->addviajeAuto($vehid, "EnBodega2")){
       $xsqldat = "Insert into datos set dato='14 imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
   //    $this->addEstado($vehid, "EnBase2");
     }
-  }
+  }  */
 
 
 
