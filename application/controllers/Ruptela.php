@@ -491,7 +491,7 @@ $pts = "";
           $numedo = $rowedo->numedo;
           $fechahora = $rowedo->fechahora;
           $fechafin = $rowedo->fechafin;
-          $xsqldat = "Insert into datos set dato='4 imei = $imei' ";
+          $xsqldat = "Insert into datos set dato='4 imei = $imei numedo=$numedo' ";
           $querydat = $this->db->query($xsqldat);
         }
       }  
