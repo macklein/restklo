@@ -430,6 +430,43 @@ public function alta_post(){
   $latdest = "";
   $londest = "";
 
+  if ($query) {
+    $row = $query->row();
+    $vehid = $row->vehid;
+    $xsqldat = "Insert into datos set dato='3 imei = $imei' ";
+    $querydat = $this->db->query($xsqldat);
+  
+    $xsql="SELECT count(*) AS numrows FROM vehstados where vehid=$vehid and estatus='Actual' limit 1"; 
+    $queryedo = $this->db->query($xsql);
+    $row = $queryedo->row();
+    $numrows = $row->numrows;
+    if ($numrows>0){
+      $xsql ="Select * from vehstados where vehid=$vehid and estatus='Actual' limit 1";  
+      $queryedo = $this->db->query($xsql);
+      if ($queryedo) {
+        $rowedo = $queryedo->row();
+        $estid = $rowedo->estid;
+        $estado = $rowedo->estado;
+        $numedo = $rowedo->numedo;
+        $fechahora = $rowedo->fechahora;
+        $fechafin = $rowedo->fechafin;
+        $xsqldat = "Insert into datos set dato='4 imei = $imei numedo=$numedo' ";
+        $querydat = $this->db->query($xsqldat);
+      }
+    }  
+    $xsqldat = "Insert into datos set dato='5 1 R imei = $imei' ";
+    $querydat = $this->db->query($xsqldat);
+   
+    $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='Pend' ";
+    $queryord = $this->db->query($xsql);
+
+    $xsqldat = "Insert into datos set dato='5 1 A imei = $imei' ";
+    $querydat = $this->db->query($xsqldat);
+    
+    $row = $queryord->row();
+    $numrows = $row->numrows;
+  }
+
 
   $respuesta = array('error' => FALSE, 'vehid' => $imei);
   $this->response( $respuesta ); 
@@ -486,7 +523,7 @@ public function altaR_post(){
       $row = $queryedo->row();
       $numrows = $row->numrows;
       if ($numrows>0){
-        $xsql ="Select * from vehstados where vehid=$vehid  and estatus='Actual' limit 1";  
+        $xsql ="Select * from vehstados where vehid=$vehid and estatus='Actual' limit 1";  
         $queryedo = $this->db->query($xsql);
         if ($queryedo) {
           $rowedo = $queryedo->row();
