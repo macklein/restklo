@@ -394,7 +394,7 @@ function pointInPolygon($point, $polygon){
 }
 
 
-public function alta_post(){
+public function altaNo_post(){
   date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
@@ -558,7 +558,7 @@ public function alta_post(){
   $this->response( $respuesta ); 
 }
 
-public function altaR_post(){
+public function alta_post(){
   date_default_timezone_set('America/Chihuahua'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
@@ -687,12 +687,14 @@ public function altaR_post(){
       }
       $xsqldat = "Insert into datos set dato='5 C imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
+/*
       $estatus = $row->estatus;
       $carid = $row->carid;
       $latdest = $row->latitude;
       $londest = $row->longitude;   
       $this->lat2 = $latdest;  
       $this->lon2 = $londest;     
+      */
   }
 
   $xsqldat = "Insert into datos set dato='11 imei = $imei' ";
