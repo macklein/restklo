@@ -490,7 +490,7 @@ $pts = "";
         $querydat = $this->db->query($xsqldat);
       
       }  
-      $xsqldat = "Insert into datos set dato='5 R'";
+      $xsqldat = "Insert into datos set dato='5 1'";
       $querydat = $this->db->query($xsqldat);
      
       $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='Pend' ";
@@ -498,6 +498,8 @@ $pts = "";
       $row = $query->row();
       $numrows = $row->numrows;
       if ($numrows>0){
+        $xsqldat = "Insert into datos set dato='5 2'";
+        $querydat = $this->db->query($xsqldat);
 
         $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
         $queryord = $this->db->query($xsql);
@@ -546,6 +548,8 @@ $pts = "";
           }          
         }    
       }
+      $xsqldat = "Insert into datos set dato='5 C'";
+      $querydat = $this->db->query($xsqldat);
       $estatus = $row->estatus;
       $carid = $row->carid;
       $latdest = $row->latitude;
