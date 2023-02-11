@@ -559,7 +559,7 @@ public function altaNo_post(){
 }
 
 public function alta_post(){
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
   $entro1="Simondon";
