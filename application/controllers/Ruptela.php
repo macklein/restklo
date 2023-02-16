@@ -709,7 +709,7 @@ public function alta_post(){
     $xsqldat = "Insert into datos set dato='12 imei = $imei' ";
     $querydat = $this->db->query($xsqldat);
 
-    if ($dist1<.5 && $numedo<>1){ // Primer Estatus cuando esta en Bodega
+    if ($dist1<1.5 && $numedo<>1){ // Primer Estatus cuando esta en Bodega
       $this->id = "Agregar Estado en Base 1 " ;
     //  if ($this->addviajeAuto($vehid, "EnBodega1")){
       $xsqldat = "Insert into datos set dato='13 imei = $imei' ";
