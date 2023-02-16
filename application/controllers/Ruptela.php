@@ -162,35 +162,18 @@ private function SigEstado($edo){
 
 private function addEstado($vehid, $edo) {
   date_default_timezone_set('America/Ciudad_Juarez'); 
-  $xsqldat = "Insert into datos set dato='15 veh = $vehid  edo = $edo' ";
-  $querydat = $this->db->query($xsqldat);
 
   $numedo = $this->NumEstado($edo);
-
-  $xsqldat = "Insert into datos set dato='16 veh = $vehid  edo = $edo' ";
-  $querydat = $this->db->query($xsqldat);
-
   $fecha=date("Y-m-d H:i:s");
   $xsql = "Update vehstados set estatus='Term' where vehid=$vehid";
   $query = $this->db->query($xsql);
 
-  $xsqldat = "Insert into datos set dato='17 veh = $vehid  edo = $edo' ";
-  $querydat = $this->db->query($xsqldat);
-
-
   $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', estado='$edo', numedo=$numedo, estatus='Actual' ";
   $query = $this->db->query($xsql);
-
-  $xsqldat = "Insert into datos set dato='18 veh = $vehid  edo = $edo' ";
-  $querydat = $this->db->query($xsqldat);
-
 
   $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
   $query = $this->db->query($xsql);
   $respuesta = array('error' => TRUE, "message" => "Listo");
-
-  $xsqldat = "Insert into datos set dato='19 veh = $vehid  edo = $edo' ";
-  $querydat = $this->db->query($xsqldat);
 
 //  $this->response( $respuesta );
 }
@@ -726,14 +709,14 @@ public function alta_post(){
     $xsqldat = "Insert into datos set dato='12 imei = $imei' ";
     $querydat = $this->db->query($xsqldat);
 
-    if ($dist1<.5){ // Primer Estatus cuando esta en Bodega
+    if ($dist1<.5 && $numedo<>1){ // Primer Estatus cuando esta en Bodega
       $this->id = "Agregar Estado en Base 1 " ;
     //  if ($this->addviajeAuto($vehid, "EnBodega1")){
       $xsqldat = "Insert into datos set dato='13 imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
       $this->addEstado($vehid, "EnBase1");
     }
-    if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
+    if ($dist2<.5 && $numedo<>2){ // Agregar Viaje Cuando va llegando con el Cliente
       $this->id = "Agregar Estado en Base 2" ;
     //  if ($this->addviajeAuto($vehid, "EnBodega2")){
       $xsqldat = "Insert into datos set dato='14 imei = $imei' ";
