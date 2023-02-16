@@ -611,7 +611,7 @@ public function alta_post(){
       $row = $queryedo->row();
       $numrows = $row->numrows;
       if ($numrows>0){
-        $xsql ="Select * from vehstados where vehid=$vehid and estatus='Actual' limit 1";  
+        $xsql ="Select estid,estado,numedo,fechahora,fechafin from vehstados where vehid=$vehid and estatus='Actual' limit 1";  
         $queryedo = $this->db->query($xsql);
         if ($queryedo) {
           $rowedo = $queryedo->row();
@@ -640,7 +640,7 @@ public function alta_post(){
         $xsqldat = "Insert into datos set dato='5 2 imei = $imei' ";
         $querydat = $this->db->query($xsqldat);
 
-        $xsql ="Select * from gpsorden where vehid=$vehid and estatus='Pend' ";  
+        $xsql ="Select ordid,sitid1,sitid2,carid,cliid from gpsorden where vehid=$vehid and estatus='Pend' ";  
         $queryord = $this->db->query($xsql);
         if ($queryord) {
           $xsqldat = "Insert into datos set dato='6 imei = $imei' ";
