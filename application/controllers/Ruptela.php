@@ -161,18 +161,37 @@ private function SigEstado($edo){
 
 
 private function addEstado($vehid, $edo) {
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
+  $xsqldat = "Insert into datos set dato='15 veh = $vehid  edo = $edo' ";
+  $querydat = $this->db->query($xsqldat);
+
   $numedo = $this->NumEstado($edo);
+
+  $xsqldat = "Insert into datos set dato='16 veh = $vehid  edo = $edo' ";
+  $querydat = $this->db->query($xsqldat);
+
   $fecha=date("Y-m-d H:i:s");
   $xsql = "Update vehstados set estatus='Term' where vehid=$vehid";
   $query = $this->db->query($xsql);
 
+  $xsqldat = "Insert into datos set dato='17 veh = $vehid  edo = $edo' ";
+  $querydat = $this->db->query($xsqldat);
+
+
   $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', estado='$edo', numedo=$numedo, estatus='Actual' ";
   $query = $this->db->query($xsql);
+
+  $xsqldat = "Insert into datos set dato='18 veh = $vehid  edo = $edo' ";
+  $querydat = $this->db->query($xsqldat);
+
 
   $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
   $query = $this->db->query($xsql);
   $respuesta = array('error' => TRUE, "message" => "Listo");
+
+  $xsqldat = "Insert into datos set dato='19 veh = $vehid  edo = $edo' ";
+  $querydat = $this->db->query($xsqldat);
+
 //  $this->response( $respuesta );
 }
   
@@ -181,7 +200,7 @@ private function addEstado($vehid, $edo) {
 
 private function addviajeAuto($vehid, $edo) {
 //  $this->id = "No Entro Bien"; 
-date_default_timezone_set('America/Chihuahua'); 
+date_default_timezone_set('America/Ciudad_Juarez'); 
   $numedo = $this->NumEstado($edo);
   $xsql ="Select viajeid, vehid, tipo, estatus, fecha1, numedo, rupid1, rupid2 from gpsviajes where vehid = $vehid and estatus='Actual' and tipo='Auto' ";  
 //  $xsql ="Select * from gpsviajes where vehid = $vehid ";  
@@ -251,7 +270,7 @@ date_default_timezone_set('America/Chihuahua');
 
 
 private function addviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip) {
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
   $xsql = "Select rupid from ruptela order by rupid desc limit 1";
   $query = $this->db->query($xsql);
   $rupini = 0;
@@ -287,7 +306,7 @@ private function addviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip) {
 }
 
 private function cierraviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip) {
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
   $xsql ="Select viajeid, vehid, tipo, estatus, fecha1, rupid1, rupid2 from gpsviajes where vehid = $vehid and estatus='Actual' and tipo='AutoSub' ";  
   $this->id = "Uno " ;
   
@@ -336,7 +355,7 @@ private function cierraviajeAutoSub($vehid, $lat, $lon, $cliid, $sitid, $descrip
 
 
 private function diffecha($f1){
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
  $date1 = new DateTime($f1);
  $date2 = new DateTime("now");
 $df = $date1->diff($date2);
@@ -395,7 +414,7 @@ function pointInPolygon($point, $polygon){
 
 
 public function altaNo_post(){
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
   $entro1="Simondon";
@@ -712,14 +731,14 @@ public function alta_post(){
     //  if ($this->addviajeAuto($vehid, "EnBodega1")){
       $xsqldat = "Insert into datos set dato='13 imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
-    //  $this->addEstado($vehid, "EnBase1");
+      $this->addEstado($vehid, "EnBase1");
     }
     if ($dist2<.5){ // Agregar Viaje Cuando va llegando con el Cliente
       $this->id = "Agregar Estado en Base 2" ;
     //  if ($this->addviajeAuto($vehid, "EnBodega2")){
       $xsqldat = "Insert into datos set dato='14 imei = $imei' ";
       $querydat = $this->db->query($xsqldat);
-    //  $this->addEstado($vehid, "EnBase2");
+      $this->addEstado($vehid, "EnBase2");
     }
   }
 
@@ -849,7 +868,7 @@ public function alta_post(){
 /*************************************** */
 
 public function alta0_post(){
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
   $this->getdatos();
   $fecha=date("Y-m-d H:i:s"); 
   $entro1="Simondon";
@@ -1087,7 +1106,7 @@ $pts = "";
 
 
 public function alta2_post(){
-  date_default_timezone_set('America/Chihuahua'); 
+  date_default_timezone_set('America/Ciudad_Juarez'); 
   $this->getdatos();
  // $this->rupdata = $this->post();
 /*
@@ -1484,7 +1503,7 @@ private function getdatos(){
   }
 /************************************************************************/
   public function enviarcarta_post(){
-    date_default_timezone_set('America/Chihuahua'); 
+    date_default_timezone_set('America/Ciudad_Juarez'); 
     $data = $this->post();
     $vehid = $data['vehid']; //
     $fecha=date("Y-m-d H:i:s");  
