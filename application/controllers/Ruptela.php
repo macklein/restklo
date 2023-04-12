@@ -519,7 +519,7 @@ public function alta_post(){
             $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
             $querys2 = $this->db->query($xsql);
             if ($querys2){
-              $rows2 = $query2->row();
+              $rows2 = $querys2->row();
               $lats2 = $rows2->latitude;
               $lons2 = $rows2->longitude;
               $lleg2 = $rows2->llegada;
