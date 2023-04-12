@@ -504,7 +504,7 @@ public function alta_post(){
               $xsqldat = "Insert into datos set dato='7.7 imei = $imei' ";
               $querydat = $this->db->query($xsqldat);
 
-              $rows1 = $query1->row();
+              $rows1 = $querys1->row();
               $lats1 = $rows1->latitude;
               $lons1 = $rows1->longitude;
               $lleg1 = $rows1->llegada;
@@ -551,12 +551,12 @@ public function alta_post(){
       if ($dist1 > 1.5 && $numedo === 1){
         // Si esta en Base1;
         // Cambia a Estado En Ruta;
-     //   $this->addEstado($vehid, 'EnRuta', $estid, $ordid);
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid);
       }
       if ($dist2 > 1 && $numedo === 2){
         // Si esta en Base2
         // Cambia a Estado En Ruta
-     //   $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
       }
     }
     
