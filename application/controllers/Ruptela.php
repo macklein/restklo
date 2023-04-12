@@ -495,8 +495,15 @@ public function alta_post(){
             $querydat = $this->db->query($xsqldat);
     
             $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
+    
+            $xsqldat = "Insert into datos set dato='7.5 imei = $xsql' ";
+            $querydat = $this->db->query($xsqldat);
+    
             $querys1 = $this->db->query($xsql);
             if ($querys1){
+              $xsqldat = "Insert into datos set dato='7.7 imei = $imei' ";
+              $querydat = $this->db->query($xsqldat);
+
               $rows1 = $query1->row();
               $lats1 = $rows1->latitude;
               $lons1 = $rows1->longitude;
