@@ -105,23 +105,26 @@ $id=1;
 private function NumEstado($edo){
   $numedo = 8;
   switch ($edo) {
-    case "EnBase1";
+    case "EnFCC";
       $numedo = 1;
       break;
-    case "EnBase2";
+    case "EnBase1";
       $numedo = 2;
       break;
-    case "EnRuta";
+    case "EnBase2";
       $numedo = 3;
       break;
-    case "EnCte";
+    case "EnRuta";
       $numedo = 4;
       break;
-    case "Regresando";
+    case "EnCte";
       $numedo = 5;
       break;
-    case "Fuera";
+    case "Regresando";
       $numedo = 6;
+      break;
+    case "Fuera";
+      $numedo = 7;
       break;
   }
   return $numedo;
@@ -221,11 +224,7 @@ public function alta_post(){
   $bodega1=array(31.72251780, -106.474329); 
   $bodega2=array(31.711737, -106.425786); 
  
-  $data = array(
-        'datos'=>$entro1,
-        'fecha'=>$fecha,
-        'imei'=>$imei
-    );
+  $data = array('datos'=>$entro1,'fecha'=>$fecha,'imei'=>$imei);
   $pts = "";
   $accion=$this->rupdata["accion"]; // Temporalmente esta accion
   $imei=$this->rupdata["imei"];
@@ -251,6 +250,7 @@ public function alta_post(){
   $ordid = 0;
   $latdest = "";
   $londest = "";
+  $descr2 = "";
   if ($query) {
       $row = $query->row();
       $vehid = $row->vehid;
@@ -278,38 +278,33 @@ public function alta_post(){
       if ($numrows>0){
         $xsql ="Select ordid,sitid1,sitid2,carid,cliid from gpsorden where vehid=$vehid and estatus='Pend' ";  
         $queryord = $this->db->query($xsql);
-        if ($queryord) {
-  
+        if ($queryord) {  
           $rord = $queryord->row();
           $ordid = $rord->ordid;
           $sitid1 = $rord->sitid1;
           $sitid2 = $rord->sitid2;
           $carid = $rord->carid;
-          $cliid = $rord->cliid;
-          
+          $cliid = $rord->cliid;          
           if ($sitid1>0 && $sitid2>0){
-
-            $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid1";  
+            $xsql ="Select sitid,latitude,longitude,llegada,salida,descrip from gpssitios where sitid=$sitid1";  
             $querys1 = $this->db->query($xsql);
             if ($querys1){
-
               $rows1 = $querys1->row();
               $lats1 = $rows1->latitude;
               $lons1 = $rows1->longitude;
               $lleg1 = $rows1->llegada;
-              $sal1 = $rows1->salida;
-      
-            }
-    
-            $xsql ="Select sitid,latitude,longitude,llegada,salida from gpssitios where sitid=$sitid2";  
+              $sal1 = $rows1->salida; 
+              $descr1 = $rows1->descrip;                    
+            }    
+            $xsql ="Select sitid,latitude,longitude,llegada,salida,descrip from gpssitios where sitid=$sitid2";  
             $querys2 = $this->db->query($xsql);
             if ($querys2){
               $rows2 = $querys2->row();
               $lats2 = $rows2->latitude;
               $lons2 = $rows2->longitude;
               $lleg2 = $rows2->llegada;
-              $sal2 = $rows2->salida;
-     
+              $sal2 = $rows2->salida;     
+              $descr2 = $rows2->descrip;
             }
           }          
         }    
@@ -320,35 +315,78 @@ public function alta_post(){
     $dist1 = $this->getKilometros($latact, $lonact, $fcc[0], $fcc[1]);
     $dist2 = $this->getKilometros($latact, $lonact, $bodega1[0], $bodega1[1]);
     $dist3 = $this->getKilometros($latact, $lonact, $bodega2[0], $bodega2[1]);
+    $dist4 = $this->getKilometros($latact, $lonact, $lats2, $lons2);
+
     $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
 
 //    $xsql = "Select ordid,ruta,vehid,choid,sitid1,sitid2,carid,cliid,placas from gpsorden where vehid=$vehid and estatus='Pend' ";
 //    $queryord = $this->db->query($xsql);
+
+    if ($dist1<.04 && $numedo<>1){ // Primer Estatus en FCC
+      $this->id = "Agregar Estado en FCC " ;
+      $this->addEstado($vehid, "EnFCC", $estid, 0);
+    }
+    if ($dist2<.1 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
+      $this->id = "Agregar Estado en Base 1 " ;
+      $this->addEstado($vehid, "EnBase1", $estid, 0);
+    }
+    if ($dist3<.1 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
+      $this->id = "Agregar Estado en Base 2" ;
+      $this->addEstado($vehid, "EnBase2", $estid, 0);
+    }
+
     if ($ordid > 0 && $estid > 0){
-      if ($dist1 > 1.5 && $numedo === 1){
+      if ($dist1 > .5 && $numedo === 1){
         // Si esta en Base1;
         // Cambia a Estado En Ruta;
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);
       }
-      if ($dist2 > 1 && $numedo === 2){
+      if ($dist2 > .5 && $numedo === 2){
+        // Si esta en Base2
+        // Cambia a Estado En Ruta
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
+      }
+      if ($dist3 > .5 && $numedo === 3){
         // Si esta en Base2
         // Cambia a Estado En Ruta
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
       }
     }    
-    if ($dist1<1.5 && $numedo<>1){ // Primer Estatus cuando esta en Bodega
-      $this->id = "Agregar Estado en Base 1 " ;
-      $this->addEstado($vehid, "EnBase1", $estid, 0);
-    }
-    if ($dist2<.5 && $numedo<>2){ // Agregar Viaje Cuando va llegando con el Cliente
-      $this->id = "Agregar Estado en Base 2" ;
-      $this->addEstado($vehid, "EnBase2", $estid, 0);
-    }
 
     if ($estado=="EnRuta"){
-
+      if ($dist4<.5){ // Ya llego con Cliente
+        if ($descr2 === "FFCC" || $descr2 === "Bodega 1" || $descr2 === "Bodega 2"){
+          if ($dist1<.04 && $descr2 === "FFCC"){ // Primer Estatus en FCC
+            $this->id = "Agregar Estado en FCC " ;
+            $this->addEstado($vehid, "EnFCC", $estid, $ordid);
+          }
+          if ($dist2<.1 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
+            $this->id = "Agregar Estado en Base 1 " ;
+            $this->addEstado($vehid, "EnBase1", $estid, $ordid);
+          }
+          if ($dist3<.1 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
+            $this->id = "Agregar Estado en Base 2" ;
+            $this->addEstado($vehid, "EnBase2", $estid, $ordid);
+          }      
+        }else{
+          $this->addEstado($vehid, "EnCte", $estid, $ordid);
+        }
+      }
     }
     
+    if ($estado=="EnCte"){
+      if ($dist4>1){ // Saliendo de el Cliente
+          $this->addEstado($vehid, "Regresando", $estid, $ordid);
+      }
+    }
+
+
+
+
+
+
+
+
 // }
   $fecha=date("Y-m-d H:i:s");
   $data = array(
@@ -372,12 +410,9 @@ public function alta_post(){
   $this->db->insert('ruptela',$data);
   $id=$this->db->insert_id();
   if ($id>0){
-      $respuesta = array(
-        'error' => FALSE,
-        'id' => $data);
+      $respuesta = array('error' => FALSE,'id' => $data);
     }else{
-        $respuesta = array(
-          'error' => TRUE);
+      $respuesta = array('error' => TRUE);
    }
   //$myString = print_r($this->xp, TRUE);
   $respuesta = array('error' => FALSE, 'vehid' => $vehid);
