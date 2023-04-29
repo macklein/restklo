@@ -331,7 +331,7 @@ public function alta_post(){
 
     $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
 
-    $xsqldat = "Insert into datos set dato='7 nvo imei = $imei $dist1 $dist2 $dist3 $dist4 ' ";
+    $xsqldat = "Insert into datos set dato='7 nvo vehiculo = $vehid $dist1 $dist2 $dist3 $dist4 ' ";
     $querydat = $this->db->query($xsqldat);
 
 
