@@ -345,13 +345,13 @@ public function alta_post(){
   
       $this->addEstado($vehid, "EnFCC", $estid, 0);
     }
-    if ($dist2<.1 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
+    if ($dist2<.5 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
       $this->id = "Agregar Estado en Base 1 " ;
       $xsqldat = "Insert into datos set dato='base1 nvo imei = $imei ' ";
       $querydat = $this->db->query($xsqldat);
       $this->addEstado($vehid, "EnBase1", $estid, 0);
     }
-    if ($dist3<.1 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
+    if ($dist3<.5 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
       $this->id = "Agregar Estado en Base 2" ;
       $xsqldat = "Insert into datos set dato='base2 nvo imei = $imei ' ";
       $querydat = $this->db->query($xsqldat);
@@ -365,7 +365,7 @@ public function alta_post(){
       $xsqldat = "Insert into datos set dato='Ruta1 nvo numedo = $numedo $dist1 $dist2 $dist3 $dist4' ";
       $querydat = $this->db->query($xsqldat);
 
-      if ($dist1 > .5 && $numedo == 1){
+      if ($dist1 > 1 && $numedo == 1){
         // Si esta en Base1;
         // Cambia a Estado En Ruta;
         $xsqldat = "Insert into datos set dato='Ruta1 nvo imei = $imei ' ";
@@ -373,7 +373,7 @@ public function alta_post(){
   
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);
       }
-      if ($dist2 > .5 && $numedo == 2){
+      if ($dist2 > 1 && $numedo == 2){
         // Si esta en Base2
         // Cambia a Estado En Ruta
         $xsqldat = "Insert into datos set dato='Ruta2 nvo imei = $imei  ' ";
@@ -381,7 +381,7 @@ public function alta_post(){
   
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
       }
-      if ($dist3 > .5 && $numedo == 3){
+      if ($dist3 > 1 && $numedo == 3){
         // Si esta en Base2
         // Cambia a Estado En Ruta
         $xsqldat = "Insert into datos set dato='Ruta3 nvo imei = $imei  ' ";
@@ -393,7 +393,7 @@ public function alta_post(){
 
     if ($estado=="EnRuta"){
       if ($dist4<.5){ // Ya llego con Cliente
-        if ($descr2 == "FFCC" || $descr2 == "Bodega 1" || $descr2 == "Bodega 2"){
+        if ($descr2 == "FCC" || $descr2 == "Bodega 1" || $descr2 == "Bodega 2"){
           if ($dist1<.04 && $descr2 == "FFCC"){ // Primer Estatus en FCC
             $this->id = "Agregar Estado en FCC " ;
             $xsqldat = "Insert into datos set dato='fcc 2 nvo imei = $imei ' ";
@@ -401,14 +401,14 @@ public function alta_post(){
       
             $this->addEstado($vehid, "EnFCC", $estid, $ordid);
           }
-          if ($dist2<.1 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
+          if ($dist2<.5 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
             $this->id = "Agregar Estado en Base 1 " ;
             $xsqldat = "Insert into datos set dato='base1 2 nvo imei = $imei  ' ";
             $querydat = $this->db->query($xsqldat);
       
             $this->addEstado($vehid, "EnBase1", $estid, $ordid);
           }
-          if ($dist3<.1 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
+          if ($dist3<.5 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
             $this->id = "Agregar Estado en Base 2" ;
             $xsqldat = "Insert into datos set dato='base2 2 nvo imei = $imei  ' ";
             $querydat = $this->db->query($xsqldat);
