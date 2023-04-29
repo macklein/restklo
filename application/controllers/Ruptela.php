@@ -331,7 +331,7 @@ public function alta_post(){
 
     $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
 
-    $xsqldat = "Insert into datos set dato='7 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+    $xsqldat = "Insert into datos set dato='7 nvo imei = $imei $dist1 $dist2 $dist3 $dist4 ' ";
     $querydat = $this->db->query($xsqldat);
 
 
@@ -340,20 +340,20 @@ public function alta_post(){
 
     if ($dist1<.04 && $numedo<>1){ // Primer Estatus en FCC
       $this->id = "Agregar Estado en FCC " ;
-      $xsqldat = "Insert into datos set dato='fcc nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+      $xsqldat = "Insert into datos set dato='fcc nvo imei = $imei ' ";
       $querydat = $this->db->query($xsqldat);
   
       $this->addEstado($vehid, "EnFCC", $estid, 0);
     }
     if ($dist2<.1 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
       $this->id = "Agregar Estado en Base 1 " ;
-      $xsqldat = "Insert into datos set dato='base1 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+      $xsqldat = "Insert into datos set dato='base1 nvo imei = $imei ' ";
       $querydat = $this->db->query($xsqldat);
       $this->addEstado($vehid, "EnBase1", $estid, 0);
     }
     if ($dist3<.1 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
       $this->id = "Agregar Estado en Base 2" ;
-      $xsqldat = "Insert into datos set dato='base2 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+      $xsqldat = "Insert into datos set dato='base2 nvo imei = $imei ' ";
       $querydat = $this->db->query($xsqldat);
       $this->addEstado($vehid, "EnBase2", $estid, 0);
     }
@@ -362,7 +362,7 @@ public function alta_post(){
       if ($dist1 > .5 && $numedo === 1){
         // Si esta en Base1;
         // Cambia a Estado En Ruta;
-        $xsqldat = "Insert into datos set dato='Ruta1 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+        $xsqldat = "Insert into datos set dato='Ruta1 nvo imei = $imei ' ";
         $querydat = $this->db->query($xsqldat);
   
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);
@@ -370,7 +370,7 @@ public function alta_post(){
       if ($dist2 > .5 && $numedo === 2){
         // Si esta en Base2
         // Cambia a Estado En Ruta
-        $xsqldat = "Insert into datos set dato='Ruta2 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+        $xsqldat = "Insert into datos set dato='Ruta2 nvo imei = $imei  ' ";
         $querydat = $this->db->query($xsqldat);
   
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
@@ -378,7 +378,7 @@ public function alta_post(){
       if ($dist3 > .5 && $numedo === 3){
         // Si esta en Base2
         // Cambia a Estado En Ruta
-        $xsqldat = "Insert into datos set dato='Ruta3 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+        $xsqldat = "Insert into datos set dato='Ruta3 nvo imei = $imei  ' ";
         $querydat = $this->db->query($xsqldat);
   
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
@@ -390,39 +390,39 @@ public function alta_post(){
         if ($descr2 === "FFCC" || $descr2 === "Bodega 1" || $descr2 === "Bodega 2"){
           if ($dist1<.04 && $descr2 === "FFCC"){ // Primer Estatus en FCC
             $this->id = "Agregar Estado en FCC " ;
-            $xsqldat = "Insert into datos set dato='fcc 2 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+            $xsqldat = "Insert into datos set dato='fcc 2 nvo imei = $imei ' ";
             $querydat = $this->db->query($xsqldat);
       
             $this->addEstado($vehid, "EnFCC", $estid, $ordid);
           }
           if ($dist2<.1 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
             $this->id = "Agregar Estado en Base 1 " ;
-            $xsqldat = "Insert into datos set dato='base1 2 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+            $xsqldat = "Insert into datos set dato='base1 2 nvo imei = $imei  ' ";
             $querydat = $this->db->query($xsqldat);
       
             $this->addEstado($vehid, "EnBase1", $estid, $ordid);
           }
           if ($dist3<.1 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
             $this->id = "Agregar Estado en Base 2" ;
-            $xsqldat = "Insert into datos set dato='base2 2 nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+            $xsqldat = "Insert into datos set dato='base2 2 nvo imei = $imei  ' ";
             $querydat = $this->db->query($xsqldat);
       
             $this->addEstado($vehid, "EnBase2", $estid, $ordid);
           }      
         }else{
-          $xsqldat = "Insert into datos set dato='cte nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+          $xsqldat = "Insert into datos set dato='cte nvo imei = $imei  ' ";
           $querydat = $this->db->query($xsqldat);
     
           $this->addEstado($vehid, "EnCte", $estid, $ordid);
         }
       }
     }
-    $xsqldat = "Insert into datos set dato='edo $estado nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+    $xsqldat = "Insert into datos set dato='edo $estado nvo imei = $imei ' ";
     $querydat = $this->db->query($xsqldat);
 
     if ($estado=="EnCte"){
       if ($dist4>1){ // Saliendo de el Cliente
-        $xsqldat = "Insert into datos set dato='regre nvo imei = $imei $dis1 $dis2 $dis3 $dis4 ' ";
+        $xsqldat = "Insert into datos set dato='regre nvo imei = $imei  ' ";
         $querydat = $this->db->query($xsqldat);
   
           $this->addEstado($vehid, "Regresando", $estid, $ordid);
@@ -448,7 +448,7 @@ public function alta_post(){
         'longitude'=>$lonact,
         'altitude'=>$dat->altitude,
         'angle'=>$dat->angle,
-        'nvo'=>'D',
+        'nvo'=>'E',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
