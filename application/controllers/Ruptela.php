@@ -362,6 +362,9 @@ public function alta_post(){
     $querydat = $this->db->query($xsqldat);
 
     if ($ordid > 0 && $estid > 0){
+      $xsqldat = "Insert into datos set dato='Ruta1 nvo numedo = $numedo $dist1 $dist2 $dist3 $dist4' ";
+      $querydat = $this->db->query($xsqldat);
+
       if ($dist1 > .5 && $numedo === 1){
         // Si esta en Base1;
         // Cambia a Estado En Ruta;
