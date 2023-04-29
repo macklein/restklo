@@ -358,6 +358,9 @@ public function alta_post(){
       $this->addEstado($vehid, "EnBase2", $estid, 0);
     }
 
+    $xsqldat = "Insert into datos set dato='Antes nvo orden = $ordid, estid = $estid $estado' ";
+    $querydat = $this->db->query($xsqldat);
+
     if ($ordid > 0 && $estid > 0){
       if ($dist1 > .5 && $numedo === 1){
         // Si esta en Base1;
