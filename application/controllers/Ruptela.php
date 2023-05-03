@@ -241,8 +241,10 @@ public function alta_post(){
   $query = $this->db->query($xsql);
   $numedo = 0;
   // $this->id = $query;
-  $xsqldat = "Insert into datos set dato='2 nvo imei = $imei' ";
-  $querydat = $this->db->query($xsqldat);
+  if ($vehid=="3"){
+    $xsqldat = "Insert into datos set dato='2 nvo imei = $imei' ";
+    $querydat = $this->db->query($xsqldat);
+  }  
   $this->xp='Entro ';
   $estatus = "";
   $carid = 0;
@@ -271,9 +273,10 @@ public function alta_post(){
           $fechafin = $rowedo->fechafin;
         }
       }  
-      $xsqldat = "Insert into datos set dato='3 nvo imei = $imei numedo=$numedo' ";
-      $querydat = $this->db->query($xsqldat);
-
+      if ($vehid=="3"){
+        $xsqldat = "Insert into datos set dato='3 nvo imei = $imei numedo=$numedo' ";
+        $querydat = $this->db->query($xsqldat);
+      }
       $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='Pend' ";
       $queryord = $this->db->query($xsql);
       $row = $queryord->row();
@@ -288,9 +291,10 @@ public function alta_post(){
           $sitid2 = $rord->sitid2;
           $carid = $rord->carid;
           $cliid = $rord->cliid;      
-          $xsqldat = "Insert into datos set dato='4 nvo imei = $imei numedo=$numedo' ";
-          $querydat = $this->db->query($xsqldat);
-        
+          if ($vehid=="3"){
+            $xsqldat = "Insert into datos set dato='4 nvo imei = $imei numedo=$numedo' ";
+            $querydat = $this->db->query($xsqldat);
+          }      
           if ($sitid1>0 && $sitid2>0){
             $xsql ="Select sitid,latitude,longitude,llegada,salida,descrip from gpssitios where sitid=$sitid1";  
             $querys1 = $this->db->query($xsql);
@@ -301,9 +305,10 @@ public function alta_post(){
               $lleg1 = $rows1->llegada;
               $sal1 = $rows1->salida; 
               $descr1 = $rows1->descrip;           
-              $xsqldat = "Insert into datos set dato='5 nvo imei = $imei numedo=$numedo' ";
-              $querydat = $this->db->query($xsqldat);
-                 
+              if ($vehid=="3"){
+                $xsqldat = "Insert into datos set dato='5 nvo imei = $imei numedo=$numedo' ";
+                $querydat = $this->db->query($xsqldat);
+              }               
             }    
             $xsql ="Select sitid,latitude,longitude,llegada,salida,descrip from gpssitios where sitid=$sitid2";  
             $querys2 = $this->db->query($xsql);
@@ -314,9 +319,10 @@ public function alta_post(){
               $lleg2 = $rows2->llegada;
               $sal2 = $rows2->salida;     
               $descr2 = $rows2->descrip;
-              $xsqldat = "Insert into datos set dato='6 nvo imei = $imei numedo=$numedo' ";
-              $querydat = $this->db->query($xsqldat);
-        
+              if ($vehid=="3"){
+                $xsqldat = "Insert into datos set dato='6 nvo imei = $imei numedo=$numedo' ";
+                $querydat = $this->db->query($xsqldat);
+              }      
             }
           }          
         }    
@@ -330,108 +336,137 @@ public function alta_post(){
     $dist4 = $this->getKilometros($latact, $lonact, $lats2, $lons2);
 
     $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
-
-    $xsqldat = "Insert into datos set dato='7 nvo vehiculo = $vehid d1=$dist1 d2=$dist2 d3=$dist3 d4=$dist4 numedo=$numedo ' ";
-    $querydat = $this->db->query($xsqldat);
+if ($vehid=="3"){
+   $xsqldat = "Insert into datos set dato='7 nvo vehiculo = $vehid d1=$dist1 d2=$dist2 d3=$dist3 d4=$dist4 numedo=$numedo ' ";
+   $querydat = $this->db->query($xsqldat);
+}
 
 
 //    $xsql = "Select ordid,ruta,vehid,choid,sitid1,sitid2,carid,cliid,placas from gpsorden where vehid=$vehid and estatus='Pend' ";
 //    $queryord = $this->db->query($xsql);
-
+$listo = 0;
     if ($dist1<.04 && $numedo<>1){ // Primer Estatus en FCC
       $this->id = "Agregar Estado en FCC " ;
-      $xsqldat = "Insert into datos set dato='fcc nvo imei = $imei ' ";
-      $querydat = $this->db->query($xsqldat);
-  
+      if ($vehid=="3"){
+        $xsqldat = "Insert into datos set dato='fcc nvo imei = $imei ' ";
+        $querydat = $this->db->query($xsqldat);  
+      }
       $this->addEstado($vehid, "EnFCC", $estid, 0);
+      $listo = 1;
     }
-    if ($dist2<.5 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
+    if ($dist2<.5 && $numedo<>2 && $listo==0){ // Primer Estatus cuando esta en Bodega
       $this->id = "Agregar Estado en Base 1 " ;
-      $xsqldat = "Insert into datos set dato='base1 nvo imei = $imei ' ";
-      $querydat = $this->db->query($xsqldat);
+      if ($vehid=="3"){
+        $xsqldat = "Insert into datos set dato='base1 nvo imei = $imei ' ";
+        $querydat = $this->db->query($xsqldat);
+      }
       $this->addEstado($vehid, "EnBase1", $estid, 0);
+      $listo = 1;
     }
-    if ($dist3<.5 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
+    if ($dist3<.5 && $numedo<>3 && $listo==0){ // Agregar Viaje Cuando va llegando con el Cliente
       $this->id = "Agregar Estado en Base 2" ;
-      $xsqldat = "Insert into datos set dato='base2 nvo imei = $imei ' ";
-      $querydat = $this->db->query($xsqldat);
+      if ($vehid=="3"){
+        $xsqldat = "Insert into datos set dato='base2 nvo imei = $imei ' ";
+        $querydat = $this->db->query($xsqldat);
+      }
       $this->addEstado($vehid, "EnBase2", $estid, 0);
+      $listo = 1;
     }
-
-    $xsqldat = "Insert into datos set dato='Antes nvo orden = $ordid, estid = $estid $estado' ";
-    $querydat = $this->db->query($xsqldat);
-
-    if ($ordid > 0 && $estid > 0){
-      $xsqldat = "Insert into datos set dato='Ruta1 nvo numedo = $numedo $dist1 $dist2 $dist3 $dist4' ";
+    if ($vehid=="3"){
+      $xsqldat = "Insert into datos set dato='Antes nvo orden = $ordid, estid = $estid $estado' ";
       $querydat = $this->db->query($xsqldat);
-
+    }
+    if ($ordid > 0 && $estid > 0 && $listo==0){
+      if ($vehid=="3"){
+        $xsqldat = "Insert into datos set dato='Ruta1 nvo numedo = $numedo $dist1 $dist2 $dist3 $dist4' ";
+        $querydat = $this->db->query($xsqldat);
+      }
       if ($dist1 > 1 && $numedo == 1){
         // Si esta en Base1;
         // Cambia a Estado En Ruta;
-        $xsqldat = "Insert into datos set dato='Ruta1 nvo imei = $imei ' ";
-        $querydat = $this->db->query($xsqldat);
-  
+        if ($vehid=="3"){
+          $xsqldat = "Insert into datos set dato='Ruta1 nvo imei = $imei ' ";
+          $querydat = $this->db->query($xsqldat);  
+        }
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);
+        $listo = 1;
       }
-      if ($dist2 > 1 && $numedo == 2){
+      if ($dist2 > 1 && $numedo == 2 && $listo==0){
         // Si esta en Base2
         // Cambia a Estado En Ruta
-        $xsqldat = "Insert into datos set dato='Ruta2 nvo imei = $imei  ' ";
-        $querydat = $this->db->query($xsqldat);
-  
+        if ($vehid=="3"){
+          $xsqldat = "Insert into datos set dato='Ruta2 nvo imei = $imei  ' ";
+          $querydat = $this->db->query($xsqldat);  
+        }
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
+        $listo = 1;
       }
-      if ($dist3 > 1 && $numedo == 3){
+      if ($dist3 > 1 && $numedo == 3 && $listo==0){
         // Si esta en Base2
         // Cambia a Estado En Ruta
-        $xsqldat = "Insert into datos set dato='Ruta3 nvo imei = $imei  ' ";
-        $querydat = $this->db->query($xsqldat);
-  
+        if ($vehid=="3"){
+          $xsqldat = "Insert into datos set dato='Ruta3 nvo imei = $imei  ' ";
+          $querydat = $this->db->query($xsqldat);  
+        }
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
+        $listo = 1;
       }
     }    
 
     if ($estado=="EnRuta"){
       if ($dist4<.5){ // Ya llego con Cliente
         if ($descr2 == "FCC" || $descr2 == "Bodega 1" || $descr2 == "Bodega 2"){
-          if ($dist1<.04 && $descr2 == "FFCC"){ // Primer Estatus en FCC
+          if ($dist1<.04 && $descr2 == "FFCC" && $listo==0){ // Primer Estatus en FCC
             $this->id = "Agregar Estado en FCC " ;
-            $xsqldat = "Insert into datos set dato='fcc 2 nvo imei = $imei ' ";
-            $querydat = $this->db->query($xsqldat);
-      
+            if ($vehid=="3"){
+              $xsqldat = "Insert into datos set dato='fcc 2 nvo imei = $imei ' ";
+              $querydat = $this->db->query($xsqldat);     
+            }
             $this->addEstado($vehid, "EnFCC", $estid, $ordid);
+            $listo = 1;
           }
-          if ($dist2<.5 && $numedo<>2){ // Primer Estatus cuando esta en Bodega
+          if ($dist2<.5 && $numedo<>2 && $listo==0){ // Primer Estatus cuando esta en Bodega
             $this->id = "Agregar Estado en Base 1 " ;
-            $xsqldat = "Insert into datos set dato='base1 2 nvo imei = $imei  ' ";
-            $querydat = $this->db->query($xsqldat);
-      
+            if ($vehid=="3"){
+              $xsqldat = "Insert into datos set dato='base1 2 nvo imei = $imei  ' ";
+              $querydat = $this->db->query($xsqldat);
+            }
             $this->addEstado($vehid, "EnBase1", $estid, $ordid);
+            $listo = 1;
           }
-          if ($dist3<.5 && $numedo<>3){ // Agregar Viaje Cuando va llegando con el Cliente
+          if ($dist3<.5 && $numedo<>3 && $listo==0){ // Agregar Viaje Cuando va llegando con el Cliente
             $this->id = "Agregar Estado en Base 2" ;
-            $xsqldat = "Insert into datos set dato='base2 2 nvo imei = $imei  ' ";
-            $querydat = $this->db->query($xsqldat);
-      
+            if ($vehid=="3"){
+              $xsqldat = "Insert into datos set dato='base2 2 nvo imei = $imei  ' ";
+              $querydat = $this->db->query($xsqldat);
+            }
             $this->addEstado($vehid, "EnBase2", $estid, $ordid);
+            $listo = 1;
           }      
         }else{
-          $xsqldat = "Insert into datos set dato='cte nvo imei = $imei  ' ";
-          $querydat = $this->db->query($xsqldat);
-    
-          $this->addEstado($vehid, "EnCte", $estid, $ordid);
+          if ($listo==0){
+            if ($vehid=="3"){
+              $xsqldat = "Insert into datos set dato='cte nvo imei = $imei  ' ";
+              $querydat = $this->db->query($xsqldat);
+            }
+            $this->addEstado($vehid, "EnCte", $estid, $ordid);
+            $listo = 1;
+          }
         }
       }
     }
-    $xsqldat = "Insert into datos set dato='edo $estado nvo imei = $imei ' ";
-    $querydat = $this->db->query($xsqldat);
-
-    if ($estado=="EnCte"){
+    if ($vehid=="3"){
+      $xsqldat = "Insert into datos set dato='edo $estado nvo imei = $imei ' ";
+      $querydat = $this->db->query($xsqldat);
+    }
+    if ($estado=="EnCte" && $listo==0){
       if ($dist4>1){ // Saliendo de el Cliente
-        $xsqldat = "Insert into datos set dato='regre nvo imei = $imei  ' ";
-        $querydat = $this->db->query($xsqldat);
-  
-          $this->addEstado($vehid, "Regresando", $estid, $ordid);
+        if ($vehid=="3"){
+          $xsqldat = "Insert into datos set dato='regre nvo imei = $imei  ' ";
+          $querydat = $this->db->query($xsqldat);
+        }
+        $this->addEstado($vehid, "Regresando", $estid, $ordid);
+        $listo = 1;
       }
     }
 
