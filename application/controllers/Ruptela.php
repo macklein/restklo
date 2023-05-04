@@ -131,7 +131,7 @@ private function NumEstado($edo){
 }
 
 
-private function addEstado($vehid, $edo, $estid, $ordid) {
+private function addEstado($vehid, $edo, $estid, $ordid, $cliid, $cte) {
   date_default_timezone_set('America/Ciudad_Juarez'); 
   // $vehid, 'EnRuta', $estid, $ordid
   $numedo = $this->NumEstado($edo);
@@ -145,7 +145,7 @@ private function addEstado($vehid, $edo, $estid, $ordid) {
     $query = $this->db->query($xsql);
   } */
 
-  $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', ordid='$ordid', estado='$edo', numedo=$numedo, estatus='Actual' ";
+  $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', ordid='$ordid', estado='$edo', numedo=$numedo, cliid=$cliid, cte=$cte, estatus='Actual' ";
   $query = $this->db->query($xsql);
 
   $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
@@ -237,7 +237,7 @@ public function alta_post(){
   $this->lon1 = $lonact; 
   $dist=7647;
   $entro1="Nada ";
-  $xsql ="Select vehid, empid, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
+  $xsql ="Select vehid, empid, cliid, cte, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
   $query = $this->db->query($xsql);
   $numedo = 0;
   // $this->id = $query;
@@ -250,13 +250,17 @@ public function alta_post(){
   $carid = 0;
   $estid = 0;
   $ordid = 0;
+  $cliid = 0;
+  $cte = "";
+  
   $latdest = "";
   $londest = "";
   $descr2 = "";
   if ($query) {
       $row = $query->row();
       $vehid = $row->vehid;
-   
+      $cliid = $row->cliid;
+      $cte = $row->cte;   
       $xsql="SELECT count(*) AS numrows FROM vehstados where vehid=$vehid and estatus='Actual' limit 1"; 
       $queryedo = $this->db->query($xsql);
       $row = $queryedo->row();
@@ -351,7 +355,7 @@ $listo = 0;
         $xsqldat = "Insert into datos set dato='fcc nvo imei = $imei ' ";
         $querydat = $this->db->query($xsqldat);  
       }
-      $this->addEstado($vehid, "EnFCC", $estid, 0);
+      $this->addEstado($vehid, "EnFCC", $estid, 0, $cliid, $cte);
       $listo = 1;
     }
     if ($dist2<.5 && $numedo<>2 && $listo==0){ // Primer Estatus cuando esta en Bodega
@@ -360,7 +364,7 @@ $listo = 0;
         $xsqldat = "Insert into datos set dato='base1 nvo imei = $imei ' ";
         $querydat = $this->db->query($xsqldat);
       }
-      $this->addEstado($vehid, "EnBase1", $estid, 0);
+      $this->addEstado($vehid, "EnBase1", $estid, 0, $cliid, $cte);
       $listo = 1;
     }
     if ($dist3<.5 && $numedo<>3 && $listo==0){ // Agregar Viaje Cuando va llegando con el Cliente
@@ -369,7 +373,7 @@ $listo = 0;
         $xsqldat = "Insert into datos set dato='base2 nvo imei = $imei ' ";
         $querydat = $this->db->query($xsqldat);
       }
-      $this->addEstado($vehid, "EnBase2", $estid, 0);
+      $this->addEstado($vehid, "EnBase2", $estid, 0, $cliid, $cte);
       $listo = 1;
     }
     if ($vehid=="3"){
@@ -388,7 +392,7 @@ $listo = 0;
           $xsqldat = "Insert into datos set dato='Ruta1 nvo imei = $imei ' ";
           $querydat = $this->db->query($xsqldat);  
         }
-        $this->addEstado($vehid, 'EnRuta', $estid, $ordid);
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte);
         $listo = 1;
       }
       if ($dist2 > 1 && $numedo == 2 && $listo==0){
@@ -398,7 +402,7 @@ $listo = 0;
           $xsqldat = "Insert into datos set dato='Ruta2 nvo imei = $imei  ' ";
           $querydat = $this->db->query($xsqldat);  
         }
-        $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte);  
         $listo = 1;
       }
       if ($dist3 > 1 && $numedo == 3 && $listo==0){
@@ -408,7 +412,7 @@ $listo = 0;
           $xsqldat = "Insert into datos set dato='Ruta3 nvo imei = $imei  ' ";
           $querydat = $this->db->query($xsqldat);  
         }
-        $this->addEstado($vehid, 'EnRuta', $estid, $ordid);  
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte);  
         $listo = 1;
       }
     }    
@@ -422,7 +426,7 @@ $listo = 0;
               $xsqldat = "Insert into datos set dato='fcc 2 nvo imei = $imei ' ";
               $querydat = $this->db->query($xsqldat);     
             }
-            $this->addEstado($vehid, "EnFCC", $estid, $ordid);
+            $this->addEstado($vehid, "EnFCC", $estid, $ordid, $cliid, $cte);
             $listo = 1;
           }
           if ($dist2<.5 && $numedo<>2 && $listo==0){ // Primer Estatus cuando esta en Bodega
@@ -431,7 +435,7 @@ $listo = 0;
               $xsqldat = "Insert into datos set dato='base1 2 nvo imei = $imei  ' ";
               $querydat = $this->db->query($xsqldat);
             }
-            $this->addEstado($vehid, "EnBase1", $estid, $ordid);
+            $this->addEstado($vehid, "EnBase1", $estid, $ordid, $cliid, $cte);
             $listo = 1;
           }
           if ($dist3<.5 && $numedo<>3 && $listo==0){ // Agregar Viaje Cuando va llegando con el Cliente
@@ -440,7 +444,7 @@ $listo = 0;
               $xsqldat = "Insert into datos set dato='base2 2 nvo imei = $imei  ' ";
               $querydat = $this->db->query($xsqldat);
             }
-            $this->addEstado($vehid, "EnBase2", $estid, $ordid);
+            $this->addEstado($vehid, "EnBase2", $estid, $ordid, $cliid, $cte);
             $listo = 1;
           }      
         }else{
@@ -449,7 +453,7 @@ $listo = 0;
               $xsqldat = "Insert into datos set dato='cte nvo imei = $imei  ' ";
               $querydat = $this->db->query($xsqldat);
             }
-            $this->addEstado($vehid, "EnCte", $estid, $ordid);
+            $this->addEstado($vehid, "EnCte", $estid, $ordid, $cliid, $cte);
             $listo = 1;
           }
         }
@@ -465,7 +469,7 @@ $listo = 0;
           $xsqldat = "Insert into datos set dato='regre nvo imei = $imei  ' ";
           $querydat = $this->db->query($xsqldat);
         }
-        $this->addEstado($vehid, "Regresando", $estid, $ordid);
+        $this->addEstado($vehid, "Regresando", $estid, $ordid, $cliid, $cte);
         $listo = 1;
       }
     }
@@ -489,6 +493,10 @@ $listo = 0;
         'longitude'=>$lonact,
         'altitude'=>$dat->altitude,
         'angle'=>$dat->angle,
+        'cliid'=>$cliid,
+        'cte'=>$cte,
+        'carid'=>$carid,
+        'ordid'=>$ordid,        
         'nvo'=>'F',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
