@@ -145,11 +145,11 @@ private function addEstado($vehid, $edo, $estid, $ordid, $cliid, $cte) {
     $query = $this->db->query($xsql);
   } */
 
-  $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', ordid='$ordid', estado='$edo', numedo=$numedo, cliid=$cliid, cte=$cte, estatus='Actual' ";
+  $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', ordid='$ordid', estado='$edo', numedo=$numedo, cliid=$cliid, cte='$cte', estatus='Actual' ";
   $query = $this->db->query($xsql);
 
-  $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
-  $query = $this->db->query($xsql);
+//  $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
+//  $query = $this->db->query($xsql);
   $respuesta = array('error' => TRUE, "message" => "Listo");
 
 //  $this->response( $respuesta );
