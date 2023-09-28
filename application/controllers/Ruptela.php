@@ -391,7 +391,7 @@ public function alta_post(){
         'carid'=>$carid,
         'ordid'=>$ordid,     
         'choid'=>$choid,     
-        'nvo'=>'K',
+        'nvo'=>'M',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
