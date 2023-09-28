@@ -105,7 +105,7 @@ $id=1;
 private function NumEstado($edo){
   $numedo = 8;
   switch ($edo) {
-    case "EnFFCC";
+    case "EnFfcc";
       $numedo = 1;
       break;
     case "EnBase1";
@@ -131,25 +131,32 @@ private function NumEstado($edo){
 }
 
 
-private function addEstado($vehid, $edo, $estid, $ordid, $cliid, $cte) {
+private function addEstado($vehid, $edo, $estid, $ordid, $cliid, $cte, $choid) {
   date_default_timezone_set('America/Ciudad_Juarez'); 
   // $vehid, 'EnRuta', $estid, $ordid
   $numedo = $this->NumEstado($edo);
   $fecha=date("Y-m-d H:i:s");
   if ($estid>0){
-    $xsql = "Update vehstados set estatus='Term' where estid=$estid";
+    $xsql = "Update vehstados set estatus='Term' where estid=$estid, modoterm='rupt'";
     $query = $this->db->query($xsql);
   }
- /* if ($ordid>0){
+
+  /*
+  if ($ordid>0){
     $xsql = "Update gpsorden set estatus='Term' where ordid=$ordid";
     $query = $this->db->query($xsql);
   } */
 
-  $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', ordid='$ordid', estado='$edo', numedo=$numedo, cliid=$cliid, cte='$cte', estatus='Actual' ";
+  $xsql = "Insert Into vehstados set vehid=$vehid, fechahora ='$fecha', ordid='$ordid', estado='$edo', numedo=$numedo, cliid=$cliid, cte='$cte', estatus='Actual', modoterm='rupt' ";
   $query = $this->db->query($xsql);
 
-//  $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
-//  $query = $this->db->query($xsql);
+  $xsql = "Update vehiculos set estatus='$edo', estado='$edo' Where vehid=$vehid";
+  $query = $this->db->query($xsql);
+
+  $xsql = "Update transchofer set estatus='$edo' Where choid=$choid";
+  $query = $this->db->query($xsql);
+
+
   $respuesta = array('error' => TRUE, "message" => "Listo");
 
 //  $this->response( $respuesta );
@@ -237,7 +244,7 @@ public function alta_post(){
   $this->lon1 = $lonact; 
   $dist=7647;
   $entro1="Nada ";
-  $xsql ="Select vehid, empid, cliid, cte, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
+  $xsql ="Select vehid, empid, cliid, cte, choid, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
   $query = $this->db->query($xsql);
   $numedo = 0;
   // $this->id = $query;
@@ -251,6 +258,7 @@ public function alta_post(){
   $estid = 0;
   $ordid = 0;
   $cliid = 0;
+  $choid = 0;
   $cte = "";
   
   $latdest = "";
@@ -260,6 +268,7 @@ public function alta_post(){
       $row = $query->row();
       $vehid = $row->vehid;
       $cliid = $row->cliid;
+      $choid = $row->choid;
       $cte = $row->cte;   
       $xsql="SELECT count(*) AS numrows FROM vehstados where vehid=$vehid and estatus='Actual' limit 1"; 
       $queryedo = $this->db->query($xsql);
@@ -341,17 +350,26 @@ public function alta_post(){
 
     if ($ordid > 0 && $estid > 0){
       if ($dist1 > 1 && $numedo == 1){
-        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte);
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte, $choid);
         $listo = 1;
       }
       if ($dist2 > 1 && $numedo == 2){
-        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte);  
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
       }
       if ($dist3 > 1 && $numedo == 3){
-        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte);  
+        $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
       }
+      if ($dist4 < 1 && $numedo == 4){ // Si Esta en Ruta, $numedo = 4 = EnRuta
+        $this->addEstado($vehid, 'EnCte', $estid, $ordid, $cliid, $cte, $choid);  
+        $listo = 1;
+      }
+      if ($dist4 > 2 && $numedo == 5){ // Si Esta con Cliente,  $numedo = 5 = EnCte
+        $this->addEstado($vehid, 'Regresando', $estid, $ordid, $cliid, $cte, $choid);  
+        $listo = 1;
+      }
+
     }    
 
 
@@ -371,8 +389,9 @@ public function alta_post(){
         'cliid'=>$cliid,
         'cte'=>$cte,
         'carid'=>$carid,
-        'ordid'=>$ordid,        
-        'nvo'=>'I',
+        'ordid'=>$ordid,     
+        'choid'=>$choid,     
+        'nvo'=>'K',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
