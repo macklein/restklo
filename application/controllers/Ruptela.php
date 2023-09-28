@@ -280,6 +280,7 @@ public function alta_post(){
         if ($queryedo) {
           $rowedo = $queryedo->row();
           $estid = $rowedo->estid;
+          $ordid = $rowedo->ordid;
           $estado = $rowedo->estado;
           $numedo = $rowedo->numedo;
           $fechahora = $rowedo->fechahora;
@@ -290,12 +291,12 @@ public function alta_post(){
         $xsqldat = "Insert into datos set dato='3 nvo imei = $imei numedo=$numedo' ";
         $querydat = $this->db->query($xsqldat);
       }
-      $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='Pend' ";
+      $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='EnRuta' ";
       $queryord = $this->db->query($xsql);
       $row = $queryord->row();
       $numrows = $row->numrows;
       if ($numrows>0){
-        $xsql ="Select ordid,sitid1,sitid2,carid,cliid from gpsorden where vehid=$vehid and estatus='Pend' ";  
+        $xsql ="Select ordid,sitid1,sitid2,carid,cliid from gpsorden where vehid=$vehid and estatus='EnRuta' ";  
         $queryord = $this->db->query($xsql);
         if ($queryord) {  
           $rord = $queryord->row();
@@ -349,7 +350,7 @@ public function alta_post(){
     $this->xp=$this->xp.' D1:'.$dist1.' D2:'.$dist2;
 
     if ($ordid > 0 && $estid > 0){
-      if ($dist1 > 1 && $numedo == 1){
+     /* if ($dist1 > 1 && $numedo == 1){
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte, $choid);
         $listo = 1;
       }
@@ -360,7 +361,7 @@ public function alta_post(){
       if ($dist3 > 1 && $numedo == 3){
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
-      }
+      } */
       if ($dist4 < 1 && $numedo == 4){ // Si Esta en Ruta, $numedo = 4 = EnRuta
         $this->addEstado($vehid, 'EnCte', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
@@ -391,7 +392,7 @@ public function alta_post(){
         'carid'=>$carid,
         'ordid'=>$ordid,     
         'choid'=>$choid,     
-        'nvo'=>'M',
+        'nvo'=>'N',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
