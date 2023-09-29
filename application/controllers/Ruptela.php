@@ -126,6 +126,9 @@ private function NumEstado($edo){
     case "Fuera";
       $numedo = 7;
       break;
+    case "Terminada";
+      $numedo = 8;
+      break;
   }
   return $numedo;
 }
@@ -366,7 +369,7 @@ public function alta_post(){
         $this->addEstado($vehid, 'EnCte', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
       }
-      if ($dist4 > 2 && $numedo == 5){ // Si Esta con Cliente,  $numedo = 5 = EnCte
+      if ($dist4 > 2 && ($numedo == 5 || $numedo == 8)){ // Si Esta con Cliente,  $numedo =  5=EnCte o 8=Terminada
         $this->addEstado($vehid, 'Regresando', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
       }
@@ -392,7 +395,7 @@ public function alta_post(){
         'carid'=>$carid,
         'ordid'=>$ordid,     
         'choid'=>$choid,     
-        'nvo'=>'N',
+        'nvo'=>'O',
         'satelites'=>$dat->satellites,
         'hdop'=>$dat->hdop,
         'speed'=>$dat->speed,
