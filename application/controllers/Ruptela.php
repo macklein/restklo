@@ -250,6 +250,8 @@ public function alta_post(){
   $xsql ="Select vehid, empid, cliid, cte, choid, empreid, descrip, placas, marca, modelo, anio, simcard, serie, carid, estatus, latitude, longitude from vehiculos where imei=$imei";  
   $query = $this->db->query($xsql);
   $numedo = 0;
+  $row = $query->row();
+  $vehid = $row->vehid;
   // $this->id = $query;
   if ($vehid=="3"){
     $xsqldat = "Insert into datos set dato='2 otr imei = $imei' ";
@@ -268,7 +270,7 @@ public function alta_post(){
   $londest = "";
   $descr2 = "";
   if ($query) {
-      $row = $query->row();
+//      $row = $query->row();
       $vehid = $row->vehid;
       $cliid = $row->cliid;
       $choid = $row->choid;
@@ -291,7 +293,7 @@ public function alta_post(){
         }
       }  
       if ($vehid=="3"){
-        $xsqldat = "Insert into datos set dato='3 nvo imei = $imei numedo=$numedo' ";
+        $xsqldat = "Insert into datos set dato='3 xxx nvo imei = $imei numedo=$numedo y estid=$estid' ";
         $querydat = $this->db->query($xsqldat);
       }
       $xsql="SELECT count(*) AS numrows FROM gpsorden where vehid=$vehid and estatus='EnRuta' ";
@@ -365,20 +367,30 @@ public function alta_post(){
         $this->addEstado($vehid, 'EnRuta', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
       } */
-      if ($dist4 < 1 && $numedo == 4){ // Si Esta en Ruta, $numedo = 4 = EnRuta
+  /*    if ($dist4 < 1 && $numedo == 4){ // Si Esta en Ruta, $numedo = 4 = EnRuta
         $this->addEstado($vehid, 'EnCte', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
-      }
-      if ($dist4 > 2 && ($numedo == 5 || $numedo == 8)){ // Si Esta con Cliente,  $numedo =  5=EnCte o 8=Terminada
+      } */
+   /*   if ($dist4 > 2 && ($numedo == 5 || $numedo == 8)){ // Si Esta con Cliente,  $numedo =  5=EnCte o 8=Terminada
         $this->addEstado($vehid, 'Regresando', $estid, $ordid, $cliid, $cte, $choid);  
         $listo = 1;
-      }
+      } */
 
     }    
 
 
 
 // }
+
+
+
+if ($vehid=="3"){
+  $xsqldat = "Insert into datos set dato='3 ultiomo nvo imei = $imei numedo=$numedo' ";
+  $querydat = $this->db->query($xsqldat);
+}
+
+
+
   $fecha=date("Y-m-d H:i:s");
   $data = array(
         'datos'=>$entro1,
